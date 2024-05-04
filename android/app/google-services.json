@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "19223132620",
+    "project_id": "discover-training-location",
+    "storage_bucket": "discover-training-location.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:19223132620:android:ea4c258dd402cc8aee0569",
+        "android_client_info": {
+          "package_name": "com.example.discover_training_location"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMTG0mFIlVq9QKPmhWcEbhdv4AcUw5ido"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
