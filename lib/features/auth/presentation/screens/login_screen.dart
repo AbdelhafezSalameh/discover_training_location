@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:discover_training_location/constants/assets_location.dart';
 import 'package:discover_training_location/constants/dimensions.dart';
-import 'package:discover_training_location/features/home/home_screen.dart';
 import 'package:discover_training_location/constants/named_routes.dart';
 import 'package:discover_training_location/constants/strings.dart';
 

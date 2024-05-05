@@ -21,7 +21,7 @@ class GetAppRoutes {
     return [
       GetPage(
         name: NamedRoutes.homeScreen,
-        page: () => HomeScreen(),
+        page: () => const HomeScreen(),
       ),
       GetPage(
         name: NamedRoutes.logIn,

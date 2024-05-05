@@ -22,7 +22,7 @@ class AppRoutes {
       NamedRoutes.successScreen: (context) => const SuccessScreen(),
       NamedRoutes.resetPassword: (context) => ResetPassword(),
       NamedRoutes.verifyCode: (context) => const VerifyCode(),
-      NamedRoutes.homeScreen: (context) => HomeScreen(),
+      NamedRoutes.homeScreen: (context) => const HomeScreen(),
       NamedRoutes.fullPageJob: (context) => const FullPageJob(),
     };
   }

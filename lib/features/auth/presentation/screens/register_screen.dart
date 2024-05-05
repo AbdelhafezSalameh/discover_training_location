@@ -112,7 +112,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     VerticalSpace(value: 32, ctx: context),
                     LoginButton(
                       loginText: StaticText.register,
-                      onTapButton: () => HomeScreen()
+                      onTapButton: () => const HomeScreen()
                       // AuthFunctions.registerUser(
                       //   emailController: _emailController,
                       //   passwordController: _passwordController,

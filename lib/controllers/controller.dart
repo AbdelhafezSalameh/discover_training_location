@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 class Controller extends GetxController {
   final RxInt _currentIndex = 0.obs;
   final List<Widget> _tabs = [
-    HomeScreen(),
+    const HomeScreen(),
     const MessagesScreen(),
     SavedJobsScreen(),
     const JobDetailsCard(),

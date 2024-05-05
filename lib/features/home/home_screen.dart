@@ -1,11 +1,9 @@
-import 'package:discover_training_location/controllers/data_controller.dart';
 import 'package:discover_training_location/features/widgets/display_card.dart';
 import 'package:discover_training_location/features/widgets/horizontal_space.dart';
 import 'package:discover_training_location/features/widgets/popular_jobs_card.dart';
 import 'package:discover_training_location/features/widgets/profile_header.dart';
 import 'package:discover_training_location/features/widgets/search_job.dart';
 import 'package:discover_training_location/features/widgets/vetical_space.dart';
-import 'package:discover_training_location/modals/data/data_model.dart';
 import 'package:flutter/material.dart';
 import 'package:discover_training_location/constants/assets_location.dart';
 import 'package:discover_training_location/themes/color_styles.dart';
