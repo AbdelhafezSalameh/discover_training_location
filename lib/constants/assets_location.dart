@@ -4,7 +4,7 @@ class Assets {
   // SVGS
   static const String pathSvg = 'assets/svgs';
   static const String pathImg = 'assets/images';
-  static const String splashSvg = '$pathSvg/Jôbizz.svg';
+  static const String splashSvg = '$pathSvg/DTL Large.svg';
   static const String helloSvg = '$pathSvg/waving-hand.svg';
   static const String mailOutlineSvg = '$pathSvg/mail-outline.svg';
   static const String passwordSvg = '$pathSvg/password.svg';
@@ -42,6 +42,6 @@ class Assets {
   static const String detailsContainer = '$pathSvg/Group 1.svg';
 
   // IMAGES
-  static const String logoImage = '$pathImg/logo.png';
-  static const String profileImage = '$pathImg/Ellipse.png';
+  static const String logoImage = '$pathImg/DTL.png';
+  static const String profileImage = '$pathImg/ayat.png';
 }

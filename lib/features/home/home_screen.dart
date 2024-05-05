@@ -52,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               textConfirm: 'Yes',
                               confirmTextColor: ColorStyles.pureWhite,
                               onConfirm: () {
-                             //   AuthFunctions.signOutUser(context);
+                                //   AuthFunctions.signOutUser(context);
                               },
                             );
                           },
@@ -88,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: const DisplayCard(
                               companyName: StaticText.google,
                               role: StaticText.productManager,
-                              salary: '\$200,000/year',
+                              salary: '\JD200,000/year',
                               location: StaticText.california,
                               color: ColorStyles.c5386E4,
                               logo: Assets.googleSvg,
@@ -100,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: const DisplayCard(
                               companyName: StaticText.facebook,
                               role: StaticText.softwareEngineer,
-                              salary: '\$180,000/year',
+                              salary: '\JD180,000/year',
                               location: StaticText.california,
                               color: ColorStyles.defaultMainColor,
                               logo: Assets.facebookSvg,
@@ -136,14 +136,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           logo: Assets.googleSvg,
                           company: StaticText.facebook,
                           role: 'Sr. Engineer',
-                          salary: '\$180,000/y',
+                          salary: '\JD180,000/y',
                           color: ColorStyles.cFFEBF3,
                         ),
                         PopularJobsCard(
                           logo: Assets.facebookSvg,
                           company: StaticText.facebook,
                           role: 'UI Designer',
-                          salary: '\$110,000/y',
+                          salary: '\JD110,000/y',
                           color: ColorStyles.cEBF1FF,
                         ),
                       ],

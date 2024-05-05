@@ -21,12 +21,12 @@ class LoginButton extends StatelessWidget {
           color: Theme.of(context)
               .copyWith(
                 primaryColor: const Color(
-                  0xFF356899,
+                  0xFF416FDF,
                 ),
               )
               .primaryColor,
           borderRadius: BorderRadius.circular(
-            scaleRadius(5, context),
+            scaleRadius(15, context),
           ),
           boxShadow: [
             BoxShadow(

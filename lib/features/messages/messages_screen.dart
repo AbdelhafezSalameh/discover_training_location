@@ -8,7 +8,6 @@ import 'package:discover_training_location/features/widgets/vetical_space.dart';
 
 import 'package:flutter/material.dart';
 
-
 class MessagesScreen extends StatelessWidget {
   const MessagesScreen({super.key});
 
@@ -51,19 +50,19 @@ class MessagesScreen extends StatelessWidget {
               const TypeOfMessage('Individual Messages'),
               VerticalSpace(value: 8, ctx: context),
               const MessageTile(
-                title: 'Dushyant Singh',
+                title: 'AL HADEEL',
                 imgPath: Assets.profileSvg,
                 subtitle: 'Hey, how are you buddy?',
               ),
               VerticalSpace(value: 8, ctx: context),
               const MessageTile(
-                title: 'Arpit Dewal',
+                title: 'AL HADEEL',
                 imgPath: Assets.profileSvg,
                 subtitle: 'All the best for coming interview',
               ),
               VerticalSpace(value: 8, ctx: context),
               const MessageTile(
-                title: 'Bill Gates',
+                title: 'AL HADEEL',
                 imgPath: Assets.profileSvg,
                 subtitle: 'We want to hire you.',
               ),

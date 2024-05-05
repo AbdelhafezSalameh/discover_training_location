@@ -1,7 +1,7 @@
 class StaticText {
   StaticText._();
 
-  static const String appTitle = 'Job Search App';
+  static const String appTitle = 'Training Search App';
 
   static const String forgotPassword = 'Forgot Password';
 
@@ -31,7 +31,7 @@ class StaticText {
 
   static const String singOut = 'Sign Out';
 
-  static const String applyToJobs = "Let's log in. Apply to jobs!";
+  static const String applyToJobs = "Let's log in. Apply to training!";
 
   static const String userNotFound = 'User not found';
 
@@ -54,11 +54,11 @@ class StaticText {
 
   static const String welcomeBackProfile = 'Welcome back!';
 
-  static const String profileName = 'Hafez Salameh';
+  static const String profileName = 'Deemah Alqaisi';
 
-  static const String searchJobPosition = 'Search a job or position';
+  static const String searchJobPosition = 'Search a Training or position';
 
-  static const String featuredJobs = 'Featured Jobs';
+  static const String featuredJobs = 'Featured Training';
 
   static const String seeAll = 'See all';
 
@@ -66,7 +66,7 @@ class StaticText {
 
   static const String facebook = 'Facebook';
 
-  static const String popularJobs = 'Popular Jobs';
+  static const String popularJobs = 'Popular Training';
 
   static const String it = 'IT';
 
@@ -74,7 +74,7 @@ class StaticText {
 
   static const String junior = 'Junior';
 
-  static const String california = 'California, USA';
+  static const String california = 'Amman, JOR';
 
   static const String message = 'Messages';
 

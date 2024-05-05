@@ -18,9 +18,10 @@ class WelcomeText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               welcomeText,
@@ -28,7 +29,9 @@ class WelcomeText extends StatelessWidget {
                 fontFamily: FontStyles.fontFamily,
                 fontWeight: FontWeight.bold,
                 fontSize: scaleWidth(25, context),
-                color: ColorStyles.darkTitleColor,
+                color: Color(
+                  0xFF416FDF,
+                ),
               ),
             ),
             SvgPicture.asset(

@@ -18,7 +18,7 @@ class JobDetailsCard extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Discover Jobs',
+          'Discover Training',
           style: TextStyle(
             color: ColorStyles.darkTitleColor,
             fontSize: 24,

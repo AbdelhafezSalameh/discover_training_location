@@ -18,7 +18,7 @@ class SavedJobsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Saved Jobs',
+          'Saved Training',
           style: TextStyle(
             color: ColorStyles.darkTitleColor,
             fontSize: 24,
