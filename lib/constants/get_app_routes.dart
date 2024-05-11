@@ -8,6 +8,7 @@ import 'package:discover_training_location/features/main_screen.dart';
 import 'package:discover_training_location/features/saved_jobs_screen.dart';
 import 'package:discover_training_location/features/home/home_screen.dart';
 import 'package:discover_training_location/constants/named_routes.dart';
+import 'package:discover_training_location/features/widgets/user_profile.dart';
 import 'package:discover_training_location/test.dart';
 import 'package:discover_training_location/utils/splash_screen.dart';
 import 'package:discover_training_location/utils/success_screen.dart';
@@ -63,9 +64,13 @@ class GetAppRoutes {
         name: NamedRoutes.savedJobs,
         page: () => SavedJobsScreen(),
       ),
-       GetPage(
+      GetPage(
         name: NamedRoutes.testScreen,
         page: () => TestScreen(),
+      ),
+      GetPage(
+        name: NamedRoutes.userProfile,
+        page: () => UserProfile(),
       ),
     ];
   }

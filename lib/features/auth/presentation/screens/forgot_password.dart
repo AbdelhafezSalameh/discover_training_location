@@ -1,5 +1,6 @@
 import 'package:country_picker/country_picker.dart';
 import 'package:discover_training_location/constants/assets_location.dart';
+import 'package:discover_training_location/features/auth/data/controllers/validation.dart';
 import 'package:discover_training_location/features/auth/presentation/widgets/login_button.dart';
 import 'package:discover_training_location/features/auth/presentation/widgets/text_fields.dart';
 import 'package:discover_training_location/features/widgets/custom_progress_indicator.dart';
@@ -196,7 +197,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     textType: TextInputType.emailAddress,
                     controller: TextEditingController(),
                     isErrorfull: false,
-                    //  inputType: InputType.email,
+                     inputType: InputType.email,
                     formKey: _formKey,
                   ),
                 if (isMobile)

@@ -1,4 +1,5 @@
 import 'package:discover_training_location/constants/assets_location.dart';
+import 'package:discover_training_location/features/auth/data/controllers/validation.dart';
 import 'package:discover_training_location/features/auth/presentation/widgets/login_button.dart';
 import 'package:discover_training_location/features/auth/presentation/widgets/text_fields.dart';
 import 'package:discover_training_location/features/widgets/vetical_space.dart';
@@ -48,7 +49,7 @@ class ResetPassword extends StatelessWidget {
                 textType: TextInputType.visiblePassword,
                 controller: _newPasswordController,
                 isErrorfull: false,
-                // inputType: InputType.password,
+                inputType: InputType.password,
                 formKey: _formKey,
               ),
               VerticalSpace(value: 16, ctx: context),
@@ -59,7 +60,7 @@ class ResetPassword extends StatelessWidget {
                 textType: TextInputType.visiblePassword,
                 controller: _confirmNewPasswordController,
                 isErrorfull: false,
-                //  inputType: InputType.confirmPassword,
+                 inputType: InputType.confirmPassword,
                 formKey: _formKey,
               ),
               VerticalSpace(value: 128, ctx: context),

@@ -4,7 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 // void main() async {
 //   WidgetsFlutterBinding.ensureInitialized();
 //   await Firebase.initializeApp();
@@ -16,10 +16,10 @@ void main() async {
 
   await Firebase.initializeApp(
 options: const FirebaseOptions(
-    apiKey: 'key',
-    appId: 'id',
-    messagingSenderId: 'sendid',
-    projectId: 'myapp',
+    apiKey: 'AIzaSyDMTG0mFIlVq9QKPmhWcEbhdv4AcUw5ido',
+    appId: '1:19223132620:android:05efe0385ce71863ee0569',
+    messagingSenderId: '19223132620',
+    projectId: 'discover-training-location',
     storageBucket: 'myapp-b9yt18.appspot.com',
   )  );
   FirebaseMessaging.instance.getToken().then((value) {

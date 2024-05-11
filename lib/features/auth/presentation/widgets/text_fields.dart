@@ -1,3 +1,5 @@
+import 'package:discover_training_location/features/auth/data/controllers/auth_functions.dart';
+import 'package:discover_training_location/features/auth/data/controllers/validation.dart';
 import 'package:flutter/material.dart';
 import 'package:discover_training_location/themes/color_styles.dart';
 import 'package:discover_training_location/constants/dimensions.dart';
@@ -5,25 +7,27 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class CustomTextField extends StatefulWidget {
   const CustomTextField({
-    super.key,
+  Key? key,
     required this.hintText,
     required this.textIcon,
     required this.isPassword,
     required this.textType,
     required this.controller,
     required this.isErrorfull,
-    //required this.inputType,
+    required this.inputType,
     required this.formKey,
+    this.onSaved,
   });
 
-  final String hintText;
+ final String hintText;
   final String textIcon;
   final bool isPassword;
   final TextInputType textType;
   final TextEditingController controller;
   final bool isErrorfull;
-  //final InputType inputType;
+  final InputType inputType;
   final GlobalKey<FormState> formKey;
+  final void Function(String?)? onSaved; 
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -39,10 +43,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
       cursorColor: Colors.black,
       keyboardType: widget.textType,
       validator: (value) {
-        // final String errMsg =
-        //     AuthFunctions.validateTextField(value, widget.inputType);
-        //return errMsg.isEmpty ? null : errMsg;
+        final String errMsg =
+            AuthFunctions.validateTextField(value, widget.inputType);
+        return errMsg.isEmpty ? null : errMsg;
       },
+      onSaved: widget.onSaved, 
       obscureText: widget.isPassword && !isPasswordVisible,
       scrollPadding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom +

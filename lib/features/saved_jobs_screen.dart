@@ -9,7 +9,7 @@ import 'package:discover_training_location/controllers/data_controller.dart';
 import 'package:get/get.dart';
 
 class SavedJobsScreen extends StatelessWidget {
-  SavedJobsScreen({super.key});
+  SavedJobsScreen({Key? key}) : super(key: key);
 
   final DataController controller = Get.put(DataController());
 
@@ -32,52 +32,42 @@ class SavedJobsScreen extends StatelessWidget {
           future: controller.fetchData(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              // final jobs = controller.savedJobs.value;
-              // final savedList = controller.savedJobsList();
               if (controller.savedJobs.value.isEmpty) {
                 return const Center(
                   child: Text('No saved jobs!'),
                 );
               }
               if (controller.savedJobs.value.isNotEmpty) {
-                return Expanded(
-                  // height: 600,
-                  child: ListView.builder(
-                    itemCount: controller.savedJobs.value.length,
-                    itemBuilder: (context, index) {
-                      // if (controller.savedJobs.value
-                      //     .contains(jobs[index].id)) {
-                      return GestureDetector(
-                        onTap: () {
-                          Get.toNamed(
-                            NamedRoutes.fullPageJob,
-                            arguments: controller.savedJobs.value[index],
+                return Column(
+                  children: [
+                    Expanded( 
+                      child: ListView.builder(
+                        itemCount: controller.savedJobs.value.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              Get.toNamed(
+                                NamedRoutes.fullPageJob,
+                                arguments: controller.savedJobs.value[index],
+                              );
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: scaleHeight(10, context),
+                                horizontal: scaleWidth(12, context),
+                              ),
+                              child: JobsCard(
+                                dataModel: controller.savedJobs.value[index],
+                                color: index % 2 == 0
+                                    ? ColorStyles.c5386E4
+                                    : const Color(0xFF3A5C99),
+                              ),
+                            ),
                           );
                         },
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            vertical: scaleHeight(10, context),
-                            horizontal: scaleWidth(12, context),
-                          ),
-                          child: JobsCard(
-                            // companyName: jobs[index].companyName,
-                            // location: jobs[index].location,
-                            // thumbnail: jobs[index].thumbnail.toString(),
-                            // title: jobs[index].title,
-                            dataModel: controller.savedJobs.value[index],
-                            color: index % 2 == 0
-                                ? ColorStyles.c5386E4
-                                : const Color(0xFF3A5C99),
-                            // via: jobs[index].via,
-                            // extensions: jobs[index].extensions as List,
-                            // id: jobs[index].id,
-                          ),
-                        ),
-                      );
-                      // }
-                      // return Text('hi');
-                    },
-                  ),
+                      ),
+                    ),
+                  ],
                 );
               }
             } else if (snapshot.hasError) {
@@ -88,14 +78,10 @@ class SavedJobsScreen extends StatelessWidget {
                 ),
               );
             }
-
             return const CustomProgressIndicator();
           },
         ),
       ),
     );
-    // },
-    //   ),
-    // );
   }
 }

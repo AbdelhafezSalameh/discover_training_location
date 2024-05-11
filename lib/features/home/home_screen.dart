@@ -1,9 +1,14 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:discover_training_location/constants/named_routes.dart';
 import 'package:discover_training_location/features/widgets/display_card.dart';
 import 'package:discover_training_location/features/widgets/horizontal_space.dart';
 import 'package:discover_training_location/features/widgets/popular_jobs_card.dart';
 import 'package:discover_training_location/features/widgets/profile_header.dart';
 import 'package:discover_training_location/features/widgets/search_job.dart';
 import 'package:discover_training_location/features/widgets/vetical_space.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:discover_training_location/constants/assets_location.dart';
 import 'package:discover_training_location/themes/color_styles.dart';
@@ -21,6 +26,35 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  File? image;
+  late String fullName = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserDataFromFirestore();
+  }
+
+  Future<void> fetchUserDataFromFirestore() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      try {
+        final snapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+        if (snapshot.exists) {
+          setState(() {
+            fullName = snapshot.get('fullName') ?? '';
+          });
+        }
+      } catch (e) {
+        // ignore: avoid_print
+        print('Error fetching user data from Firestore: $e');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -40,21 +74,25 @@ class _HomeScreenState extends State<HomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         ProfileHeader(
+                          // lightWelcomeText: StaticText.welcomeBackProfile.tr,
+                          // boldWelcomeText: StaticText.profileName.tr,
                           lightWelcomeText: StaticText.welcomeBackProfile.tr,
-                          boldWelcomeText: StaticText.profileName.tr,
+                          boldWelcomeText: '$fullName',
                         ),
                         GestureDetector(
                           onTap: () {
-                            Get.defaultDialog(
-                              title: 'Sign out',
-                              middleText: 'Do you really want to sign out?',
-                              textCancel: 'No',
-                              textConfirm: 'Yes',
-                              confirmTextColor: ColorStyles.pureWhite,
-                              onConfirm: () {
-                                //   AuthFunctions.signOutUser(context);
-                              },
-                            );
+                            Get.toNamed(
+                              NamedRoutes.userProfile,
+                            ); // Get.defaultDialog(
+                            //   title: 'Sign out',
+                            //   middleText: 'Do you really want to sign out?',
+                            //   textCancel: 'No',
+                            //   textConfirm: 'Yes',
+                            //   confirmTextColor: ColorStyles.pureWhite,
+                            //   onConfirm: () {
+                            //     //   AuthFunctions.signOutUser(context);
+                            //   },
+                            // );
                           },
                           child: Image.asset(
                             Assets.profileImage,

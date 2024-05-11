@@ -1,17 +1,24 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:discover_training_location/features/auth/data/controllers/auth_functions.dart';
+import 'package:discover_training_location/features/auth/data/controllers/keyboard.dart';
+import 'package:discover_training_location/features/auth/data/controllers/validation.dart';
+import 'package:discover_training_location/features/auth/data/services/firebase/auth_service.dart';
 import 'package:discover_training_location/features/auth/presentation/widgets/login_button.dart';
 import 'package:discover_training_location/features/auth/presentation/widgets/text_fields.dart';
 import 'package:discover_training_location/features/widgets/custom_scaffold.dart';
 import 'package:discover_training_location/features/widgets/horizontal_space.dart';
 import 'package:discover_training_location/features/widgets/vetical_space.dart';
 import 'package:discover_training_location/features/widgets/welcome_text.dart';
+import 'package:discover_training_location/themes/color_styles.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:discover_training_location/constants/assets_location.dart';
 import 'package:discover_training_location/constants/dimensions.dart';
 import 'package:discover_training_location/constants/named_routes.dart';
 import 'package:discover_training_location/constants/strings.dart';
-
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart';
 
 class LogIn extends StatefulWidget {
   const LogIn({super.key});
@@ -21,13 +28,55 @@ class LogIn extends StatefulWidget {
 }
 
 class _LogInState extends State<LogIn> {
+  bool _isLoading = false;
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passWordController = TextEditingController();
   bool isErrorMail = false;
   bool isErrorPassword = false;
   bool isErrorFull = false;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String? email;
+  String? password;
+  final AuthService _auth = AuthService();
   bool rememberPassword = true;
+Future<String?> login({
+  required String email,
+  required String password,
+}) async {
+  try {
+    // Create an instance of AuthService
+    AuthService authService = AuthService();
+
+    // Check if the email is registered in Firestore
+    bool isEmailRegistered = await authService.isEmailRegistered(email);
+    if (!isEmailRegistered) {
+      return 'Email is not registered.';
+    }
+
+    // Proceed with signing in
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    
+    return 'success';
+  } on FirebaseAuthException catch (e) {
+    // Handle Firebase Auth exceptions
+    if (e.code == 'invalid-email') {
+      return e.code;
+    } else if (e.code == 'user-not-found') {
+      return e.code;
+    } else if (e.code == 'wrong-password') {
+      return e.code;
+    } else {
+      return e.toString();
+    }
+  } catch (e) {
+    return e.toString();
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +114,7 @@ class _LogInState extends State<LogIn> {
                   child: ListView(
                     children: [
                       VerticalSpace(value: 8, ctx: context),
-                      WelcomeText(
+                      const WelcomeText(
                         welcomePath: Assets.helloSvg,
                         welcomeText: StaticText.welcomeBack,
                       ),
@@ -82,7 +131,7 @@ class _LogInState extends State<LogIn> {
                               textType: TextInputType.emailAddress,
                               controller: _emailController,
                               isErrorfull: isErrorFull,
-                              //    inputType: InputType.email,
+                              inputType: InputType.email,
                               formKey: _formKey,
                             ),
                             VerticalSpace(value: 16, ctx: context),
@@ -93,25 +142,21 @@ class _LogInState extends State<LogIn> {
                               textType: TextInputType.visiblePassword,
                               controller: _passWordController,
                               isErrorfull: isErrorFull,
-                              //inputType: InputType.password,
+                              inputType: InputType.password,
                               formKey: _formKey,
                             ),
                             // if (isErrorPassword)
                             //   const ValidationError(errorText: 'Invalid password'),
                             VerticalSpace(value: 32, ctx: context),
                             LoginButton(
-                                loginText: StaticText.logIn,
-                                onTapButton: () => Navigator.pushNamed(
-                                      context,
-                                      NamedRoutes.mainScreen,
-                                    )
-                                // AuthFunctions.loginUser(
-                                //   emailController: _emailController,
-                                //   passWordController: _passWordController,
-                                //   formKey: _formKey,
-                                //   context: context,
-                                // ),
-                                ),
+                              loginText: StaticText.logIn,
+                              onTapButton: () => AuthFunctions.loginUser(
+                                emailController: _emailController,
+                                passWordController: _passWordController,
+                                formKey: _formKey,
+                                context: context,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -204,7 +249,7 @@ class _LogInState extends State<LogIn> {
                             onTap: () {
                               Navigator.pushNamed(
                                 context,
-                                NamedRoutes.resetPassword,
+                                NamedRoutes.registerScreen,
                               );
                             },
                             child: const Text(
@@ -229,5 +274,28 @@ class _LogInState extends State<LogIn> {
         ),
       ),
     );
+  }
+}
+
+Future<String?> getUserRole(String userId) async {
+  try {
+    DocumentSnapshot userSnapshot =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+
+    if (userSnapshot.exists) {
+      // هاي فيلد بالفايرستور عشان احدد المستخدمين
+      return userSnapshot.get('role');
+    } else {
+      // اذا ما عندي يوزر محدد
+      // ignore: avoid_print
+      print(
+          'User document does not exist in Firestore for user with ID: $userId');
+      return null;
+    }
+  } catch (e) {
+    // مشاكل تانية اذا صارت وقت ترجيع البيانات
+    // ignore: avoid_print
+    print('Error getting user role for user with ID: $userId - Error: $e');
+    return null;
   }
 }
