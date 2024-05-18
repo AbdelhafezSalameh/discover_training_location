@@ -40,7 +40,7 @@ dependencies:
   get: ^4.6.5
   onesignal_flutter: ^3.5.1
   cached_network_image: ^3.2.3
-  url_launcher: ^6.1.12
+  url_launcher: ^6.2.2
   http: ^1.1.0
   flutter_launcher_icons: ^0.13.1
   get_storage: ^2.1.1
@@ -50,7 +50,13 @@ dependencies:
   firebase_messaging: ^14.9.1
   firebase_auth: ^4.19.5
   google_sign_in: ^6.2.1
-  
+  tab_container: ^3.5.3
+  animated_segmented_tab_control: ^2.0.0
+  babstrap_settings_screen: ^0.1.6
+  pulsator: ^1.0.0+2
+  dot_curved_bottom_nav: ^0.0.2
+  draggable_home: ^1.0.5
+  image_picker: ^1.0.4
 dev_dependencies:
   flutter_test:
     sdk: flutter

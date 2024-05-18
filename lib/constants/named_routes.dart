@@ -14,4 +14,6 @@ class NamedRoutes {
   static const String savedJobs = '/savedJobs';
   static const String testScreen = '/testScreen';
   static const String userProfile = '/userProfile';
+  static const String companyMainScreen = '/companyMainScreen';
+  static const String companyHomeScreen = '/companyHomeScreen';
 }

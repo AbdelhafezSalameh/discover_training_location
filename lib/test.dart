@@ -1,164 +1,65 @@
-import 'package:discover_training_location/constants/assets_location.dart';
-import 'package:discover_training_location/constants/dimensions.dart';
-import 'package:discover_training_location/constants/named_routes.dart';
-import 'package:discover_training_location/features/auth/presentation/widgets/login_button.dart';
-import 'package:discover_training_location/features/auth/presentation/widgets/text_fields.dart';
-import 'package:discover_training_location/features/widgets/custom_scaffold.dart';
-import 'package:discover_training_location/features/widgets/vetical_space.dart';
-import 'package:discover_training_location/themes/color_styles.dart';
-import 'package:discover_training_location/themes/font_styles.dart';
-import 'package:discover_training_location/constants/strings.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:pulsator/pulsator.dart';
 
 class TestScreen extends StatefulWidget {
-  TestScreen({super.key});
+  const TestScreen({super.key});
 
   @override
   State<TestScreen> createState() => _TestScreenState();
 }
 
 class _TestScreenState extends State<TestScreen> {
-  final TextEditingController _newPasswordController = TextEditingController();
+  int _count = 4;
+  int _duration = 3;
+  int _repeatCount = 0;
 
-  final TextEditingController _confirmNewPasswordController =
-      TextEditingController();
+  void _handleCountChanged(double value) =>
+      setState(() => _count = value.toInt());
 
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  void _handleDurationChanged(double value) =>
+      setState(() => _duration = value.toInt());
 
-  bool rememberPassword = true;
-  bool isLoading = false;
-  late String fullName = '';
-  late String major = '';
-  String? profileImageUrl;
-  //final FirebaseStorageService _storageService = FirebaseStorageService();
+  void _handleRepeatCountChanged(double value) =>
+      setState(() => _repeatCount = value.toInt());
 
   @override
-  void initState() {
-    super.initState();
-    profileImageUrl = null;
-    // fetchUserDataFromFirestore().then((_) {
-    //   setState(() {});
-    // });
-  }
-
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Profile",
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        iconTheme: const IconThemeData(color: Colors.white),
-        backgroundColor: ColorStyles.defaultMainColor,
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Pulsator')),
       body: SafeArea(
+        bottom: true,
         child: Column(
           children: [
-            SizedBox(
-              height: scaleHeight(50, context),
-            ),
-            Stack(children: [
-              GestureDetector(
-                onTap: null,
-                child: Stack(
-                  children: [
-                    CircleAvatar(
-                      radius: scaleHeight(75, context),
-                      backgroundColor: Colors.grey[300],
-                      child: isLoading
-                          ? const CircularProgressIndicator()
-                          : profileImageUrl != null
-                              ? CircleAvatar(
-                                  radius: scaleHeight(75, context),
-                                  backgroundImage:
-                                      NetworkImage(profileImageUrl!),
-                                )
-                              : null,
+            Expanded(
+              child: Stack(
+                children: [
+                  Pulsator(
+                    style: const PulseStyle(color: Colors.red),
+                    count: _count,
+                    duration: Duration(seconds: _duration),
+                    repeat: _repeatCount,
+                  ),
+                  Center(
+                    child: Image.asset(
+                      'assets/android_phone.png',
+                      width: 128,
+                      height: 128,
                     ),
-                    if (profileImageUrl == null)
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: Container(
-                          padding: EdgeInsets.all(
-                            scaleHeight(6, context),
-                          ),
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                          child: Icon(
-                            Icons.add,
-                            color: Colors.grey[500],
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ]),
+            ),
             Padding(
-              padding: EdgeInsets.all(scaleHeight(10, context)),
-              child: Center(
-                child: Column(
-                  children: [
-                    Text(
-                      fullName,
-                      style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.w700),
-                    ),
-                    Text(
-                      major,
-                      style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.w700),
-                    ),
-                  ],
-                ),
+              padding: const EdgeInsets.all(24),
+              child: _Controls(
+                count: _count,
+                duration: _duration,
+                repeatCount: _repeatCount,
+                onCountChanged: _handleCountChanged,
+                onDurationChanged: _handleDurationChanged,
+                onRepeatCountChanged: _handleRepeatCountChanged,
               ),
             ),
-            VerticalSpace(
-              value: 20,
-              ctx: context,
-            ),
-            ProfileMenu(
-              text: "Privacy Policy",
-              icon: "assets/icons/Privacy-Policy.svg",
-              url:
-                  "https://www.freeprivacypolicy.com/live/0909ca0e-2d46-47f4-81a3-068c8d6e58cc",
-              press: () => {},
-              // backgroundColor: Color.fromARGB(65, 53, 105, 153),
-            ),
-            ProfileMenu(
-              text: "Settings",
-              icon: "assets/icons/Settings.svg",
-              press: () {
-                //  Navigator.pushNamed(context, SettingsScreen.routeName);
-              },
-              //  backgroundColor: Color.fromARGB(65, 53, 105, 153),
-            ),
-            ProfileMenu(
-              text: "Logout",
-              icon: "assets/icons/Log out.svg",
-              press: () {
-                //   FirebaseAuth.instance.signOut();
-                //   Navigator.pushNamed(context, SignInScreen.routeName);
-              },
-              // backgroundColor: Color.fromARGB(65, 53, 105, 153),
-            ),
-            // ProfileMenu(
-            //   text: "Test",
-            //   icon: "assets/icons/Log out.svg",
-            //   press: () {
-            //     Navigator.pushNamed(context, testClass.routeName);
-            //   },
-            // ),
           ],
         ),
       ),
@@ -166,71 +67,70 @@ class _TestScreenState extends State<TestScreen> {
   }
 }
 
-class ProfileMenu extends StatelessWidget {
-  const ProfileMenu({
-    Key? key,
-    required this.text,
-    required this.icon,
-    this.press,
-    this.url,
-    this.backgroundColor,
-  }) : super(key: key);
-  final String? url;
+class _Controls extends StatelessWidget {
+  const _Controls({
+    required this.count,
+    required this.duration,
+    required this.repeatCount,
+    required this.onCountChanged,
+    required this.onDurationChanged,
+    required this.onRepeatCountChanged,
+  });
 
-  final String text, icon;
-  final VoidCallback? press;
-  final Color? backgroundColor;
+  final int count;
+  final int duration;
+  final int repeatCount;
+  final ValueChanged<double> onCountChanged;
+  final ValueChanged<double> onDurationChanged;
+  final ValueChanged<double> onRepeatCountChanged;
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    return Padding(
-      padding: EdgeInsets.symmetric(
-          horizontal: scaleWidth(20, context),
-          vertical: scaleHeight(10, context)),
-      child: TextButton(
-        onPressed: () {
-          if (url != null) {
-            launch(url!);
-          } else if (press != null) {
-            press!();
-          }
-        },
-        style: TextButton.styleFrom(
-          textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-          padding: const EdgeInsets.all(20),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          backgroundColor: backgroundColor,
-        ),
-        child: Row(
+    return Table(
+      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+      columnWidths: const {
+        0: FixedColumnWidth(70),
+        1: FlexColumnWidth(),
+        2: FixedColumnWidth(30),
+      },
+      children: [
+        TableRow(
           children: [
-            SvgPicture.asset(
-              icon,
-              // ignore: deprecated_member_use
-              color: ColorStyles.defaultMainColor,
-              width: width * 0.06,
+            const Text('Count', textAlign: TextAlign.right),
+            Slider(
+              value: count.toDouble(),
+              min: 1,
+              max: 9,
+              onChanged: onCountChanged,
             ),
-            const SizedBox(width: 20),
-            Expanded(
-              child: Text(text,
-                  style: const TextStyle(color: ColorStyles.defaultMainColor)),
-            ),
-            Container(
-              height: height * 0.04,
-              width: width * 0.08,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
-                  color: ColorStyles.defaultMainColor),
-              child: const Icon(
-                Icons.arrow_forward_ios,
-                color: Colors.white,
-              ),
-            ),
+            Text(count.toString()),
           ],
         ),
-      ),
+        TableRow(
+          children: [
+            const Text('Duration', textAlign: TextAlign.right),
+            Slider(
+              value: duration.toDouble(),
+              min: 1,
+              max: 6,
+              onChanged: onDurationChanged,
+            ),
+            Text(duration.toString()),
+          ],
+        ),
+        TableRow(
+          children: [
+            const Text('Repeats', textAlign: TextAlign.right),
+            Slider(
+              value: repeatCount.toDouble(),
+              min: 0,
+              max: 10,
+              onChanged: onRepeatCountChanged,
+            ),
+            Text(repeatCount.toString()),
+          ],
+        ),
+      ],
     );
   }
 }

@@ -3,10 +3,13 @@ import 'package:discover_training_location/features/auth/presentation/screens/lo
 import 'package:discover_training_location/features/auth/presentation/screens/register_screen.dart';
 import 'package:discover_training_location/features/auth/presentation/screens/reset_password.dart';
 import 'package:discover_training_location/features/auth/presentation/screens/verify_code.dart';
+import 'package:discover_training_location/features/company_main_screen.dart';
 import 'package:discover_training_location/features/full_page_job.dart';
+import 'package:discover_training_location/features/home/company_home_screen.dart';
 import 'package:discover_training_location/features/home/home_screen.dart';
 import 'package:discover_training_location/constants/named_routes.dart';
 import 'package:discover_training_location/features/widgets/user_profile.dart';
+import 'package:discover_training_location/test.dart';
 import 'package:discover_training_location/utils/splash_screen.dart';
 import 'package:discover_training_location/utils/success_screen.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +29,9 @@ class AppRoutes {
       NamedRoutes.homeScreen: (context) => const HomeScreen(),
       NamedRoutes.fullPageJob: (context) => const FullPageJob(),
       NamedRoutes.userProfile: (context) => UserProfile(),
+      NamedRoutes.testScreen: (context) => TestScreen(),
+      NamedRoutes.companyMainScreen: (context) => const CompanyMainScreen(),
+      NamedRoutes.companyHomeScreen: (context) => const CompanyHomeScreen(),
     };
   }
 }

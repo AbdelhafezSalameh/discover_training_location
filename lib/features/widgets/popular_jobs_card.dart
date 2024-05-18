@@ -1,39 +1,73 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:discover_training_location/themes/color_styles.dart';
 import 'package:discover_training_location/constants/dimensions.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class PopularJobsCard extends StatelessWidget {
+class PopularJobsCard extends StatefulWidget {
   const PopularJobsCard({
-    super.key,
+    Key? key,
     required this.logo,
     required this.company,
     required this.role,
     required this.salary,
-    required this.color,
-  });
+    required this.color1,
+    required this.color2,
+    required this.duration,
+  }) : super(key: key);
 
   final String logo;
   final String role;
   final String company;
   final String salary;
-  final Color color;
+  final Color color1;
+  final Color color2;
+  final Duration duration;
+
+  @override
+  _PopularJobsCardState createState() => _PopularJobsCardState();
+}
+
+class _PopularJobsCardState extends State<PopularJobsCard> {
+  late Color _currentColor;
+  late Timer _timer;
+  bool _colorChange = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentColor = widget.color1;
+    _timer = Timer.periodic(widget.duration, (Timer timer) {
+      setState(() {
+        _colorChange = !_colorChange;
+        _currentColor = _colorChange ? widget.color2 : widget.color1;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return AnimatedContainer(
+      duration: widget.duration,
       width: scaleWidth(136, context),
       height: scaleHeight(164, context),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(scaleRadius(24, context)),
-        color: color,
+        color: _currentColor,
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          SvgPicture.asset(logo),
+          SvgPicture.asset(widget.logo),
           Text(
-            role,
+            widget.role,
             style: TextStyle(
               fontSize: scaleWidth(14, context),
               color: ColorStyles.c0d0d26,
@@ -41,7 +75,7 @@ class PopularJobsCard extends StatelessWidget {
             ),
           ),
           Text(
-            company,
+            widget.company,
             style: TextStyle(
               fontSize: scaleWidth(12, context),
               color: ColorStyles.c7A7C85,
@@ -49,7 +83,7 @@ class PopularJobsCard extends StatelessWidget {
             ),
           ),
           Text(
-            salary,
+            widget.salary,
             style: TextStyle(
               fontSize: scaleWidth(12, context),
               color: ColorStyles.c0d0d26,

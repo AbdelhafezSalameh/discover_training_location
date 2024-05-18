@@ -20,6 +20,10 @@ class Validation {
   static bool isEqualPassword(String val1, String val2) {
     return val1 == val2;
   }
+
+  static bool isValidNumber(String number) {
+    return RegExp(r'[^0-9]').hasMatch(number);
+  }
 }
 
-enum InputType { email, password, confirmPassword, name }
+enum InputType { email, password, confirmPassword, name, number, description, responsibilities, benefits, position, location, salary }

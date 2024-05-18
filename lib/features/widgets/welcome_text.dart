@@ -45,7 +45,7 @@ class WelcomeText extends StatelessWidget {
             ),
           ],
         ),
-        const Text(
+        Text(
           StaticText.applyToJobs,
           style: FontStyles.lightStyle,
         ),

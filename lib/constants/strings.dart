@@ -19,8 +19,10 @@ class StaticText {
   static const String registration = 'Registration ';
 
   static const String fullName = 'Full name';
+  static const String companyName = 'Company name';
 
   static const String register = 'Register';
+  static const String registerCompany = 'Company Register';
 
   static const String resetPasswordFullText =
       'Enter your new password and confirm the new password to reset password';
@@ -32,12 +34,17 @@ class StaticText {
   static const String singOut = 'Sign Out';
 
   static const String applyToJobs = "Let's log in. Apply to training!";
+  static const String CreateTrainig = "Let's log in. Create to training!";
 
   static const String userNotFound = 'User not found';
 
   static const String email = 'E-mail';
+  static const String emailCompany = 'Company E-mail';
 
   static const String password = 'Password';
+  static const String LocationCompany = 'Company Location';
+  static const String contactCompany = 'Company Contact';
+  static const String proofCompany = 'Company Proof';
 
   static const String confirmPassword = 'Confirm Password';
 

@@ -16,7 +16,7 @@ class Controller extends GetxController {
   ];
 
   final RxInt _tabController = 0.obs;
-
+static Controller get to => Get.find();
   Widget switchScreen() {
     return _tabs[_currentIndex.value];
   }

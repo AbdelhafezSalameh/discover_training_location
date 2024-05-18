@@ -1,42 +1,76 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:discover_training_location/constants/assets_location.dart';
+import 'package:discover_training_location/constants/dimensions.dart';
 import 'package:discover_training_location/constants/named_routes.dart';
+import 'package:discover_training_location/constants/strings.dart';
+import 'package:discover_training_location/features/auth/data/services/firebase/FireBase_Storge.dart';
 import 'package:discover_training_location/features/widgets/display_card.dart';
-import 'package:discover_training_location/features/widgets/horizontal_space.dart';
+import 'package:discover_training_location/features/widgets/featured_jobs_tile.dart';
 import 'package:discover_training_location/features/widgets/popular_jobs_card.dart';
 import 'package:discover_training_location/features/widgets/profile_header.dart';
 import 'package:discover_training_location/features/widgets/search_job.dart';
 import 'package:discover_training_location/features/widgets/vetical_space.dart';
+import 'package:discover_training_location/themes/color_styles.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:discover_training_location/constants/assets_location.dart';
-import 'package:discover_training_location/themes/color_styles.dart';
-import 'package:discover_training_location/constants/dimensions.dart';
-import 'package:discover_training_location/features/widgets/featured_jobs_tile.dart';
-
-import 'package:discover_training_location/constants/strings.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late PageController _pageController;
+  late Timer _timer;
+  int _currentPage = 0;
   File? image;
   late String fullName = '';
+  String? profileImageUrl;
+  bool isLoading = false;
 
+  final FirebaseStorageService _storageService = FirebaseStorageService();
   @override
   void initState() {
     super.initState();
-    fetchUserDataFromFirestore();
+    _pageController = PageController(initialPage: 0);
+
+    _timer = Timer.periodic(const Duration(seconds: 4), (Timer timer) {
+      if (_currentPage < 3) {
+        _currentPage++;
+      } else {
+        _currentPage = 0;
+      }
+      _pageController.animateToPage(
+        _currentPage,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    });
+
+    profileImageUrl = null;
+
+    fetchUserData().then((_) {
+      setState(() {});
+    });
   }
 
-  Future<void> fetchUserDataFromFirestore() async {
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _timer.cancel();
+    super.dispose();
+  }
+
+  Future<void> fetchUserData() async {
     final user = FirebaseAuth.instance.currentUser;
+
     if (user != null) {
       try {
         final snapshot = await FirebaseFirestore.instance
@@ -45,12 +79,44 @@ class _HomeScreenState extends State<HomeScreen> {
             .get();
         if (snapshot.exists) {
           setState(() {
-            fullName = snapshot.get('fullName') ?? '';
+            fullName = snapshot.get('fullName') ?? 'user user';
+            profileImageUrl = snapshot.get('profileImage') ?? '';
+
+            if (profileImageUrl != null) {}
           });
         }
       } catch (e) {
         // ignore: avoid_print
         print('Error fetching user data from Firestore: $e');
+      }
+    }
+  }
+
+  Future<void> _getImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        isLoading = true;
+      });
+
+      try {
+        final user = FirebaseAuth.instance.currentUser;
+        if (user != null) {
+          final imageUrl = await _storageService.uploadProfileImage(
+              File(pickedFile.path), user.uid);
+
+          if (imageUrl != null) {
+            setState(() {
+              profileImageUrl = imageUrl;
+            });
+          }
+        }
+      } finally {
+        setState(() {
+          isLoading = false;
+        });
       }
     }
   }
@@ -74,30 +140,31 @@ class _HomeScreenState extends State<HomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         ProfileHeader(
-                          // lightWelcomeText: StaticText.welcomeBackProfile.tr,
-                          // boldWelcomeText: StaticText.profileName.tr,
                           lightWelcomeText: StaticText.welcomeBackProfile.tr,
                           boldWelcomeText: '$fullName',
                         ),
                         GestureDetector(
                           onTap: () {
-                            Get.toNamed(
-                              NamedRoutes.userProfile,
-                            ); // Get.defaultDialog(
-                            //   title: 'Sign out',
-                            //   middleText: 'Do you really want to sign out?',
-                            //   textCancel: 'No',
-                            //   textConfirm: 'Yes',
-                            //   confirmTextColor: ColorStyles.pureWhite,
-                            //   onConfirm: () {
-                            //     //   AuthFunctions.signOutUser(context);
-                            //   },
-                            // );
+                            Get.toNamed(NamedRoutes.userProfile);
                           },
-                          child: Image.asset(
-                            Assets.profileImage,
+                          child: Stack(
+                            children: [
+                              CircleAvatar(
+                                radius: scaleHeight(30, context),
+                                backgroundColor: Colors.grey[300],
+                                child: isLoading
+                                    ? const CircularProgressIndicator()
+                                    : profileImageUrl != null
+                                        ? CircleAvatar(
+                                            radius: scaleHeight(30, context),
+                                            backgroundImage:
+                                                NetworkImage(profileImageUrl!),
+                                          )
+                                        : null,
+                              ),
+                            ],
                           ),
-                        ),
+                        )
                       ],
                     ),
                     VerticalSpace(value: 39, ctx: context),
@@ -110,44 +177,25 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              HorizontalSpace(value: 20, ctx: context),
-
-              // JOBS CARD
               SizedBox(
                 height: scaleHeight(220, context),
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
+                child: PageView.builder(
+                  controller: _pageController,
                   itemCount: 4,
                   itemBuilder: (context, index) {
-                    return index % 2 == 0
-                        ? Padding(
-                            padding:
-                                EdgeInsets.only(left: scaleWidth(24, context)),
-                            child: const DisplayCard(
-                              companyName: StaticText.google,
-                              role: StaticText.productManager,
-                              salary: '\JD200,000/year',
-                              location: StaticText.california,
-                              color: ColorStyles.c5386E4,
-                              logo: Assets.googleSvg,
-                            ),
-                          )
-                        : Padding(
-                            padding:
-                                EdgeInsets.only(left: scaleWidth(24, context)),
-                            child: const DisplayCard(
-                              companyName: StaticText.facebook,
-                              role: StaticText.softwareEngineer,
-                              salary: '\JD180,000/year',
-                              location: StaticText.california,
-                              color: ColorStyles.defaultMainColor,
-                              logo: Assets.facebookSvg,
-                            ),
-                          );
+                    return Padding(
+                      padding: EdgeInsets.only(
+                        left: scaleWidth(24, context),
+                        right: scaleWidth(24, context),
+                      ),
+                      child: AnimatedCard(
+                        index: index,
+                        pageController: _pageController,
+                      ),
+                    );
                   },
                 ),
               ),
-
               Padding(
                 padding: EdgeInsets.fromLTRB(
                   scaleWidth(24, context),
@@ -155,9 +203,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   scaleWidth(24, context),
                   scaleHeight(16, context),
                 ),
-
-                // RECOMMENDED JOBS
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const FeaturedJobsTile(
                       mainText: StaticText.popularJobs,
@@ -167,33 +214,86 @@ class _HomeScreenState extends State<HomeScreen> {
                       value: 20,
                       ctx: context,
                     ),
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        PopularJobsCard(
-                          logo: Assets.googleSvg,
-                          company: StaticText.facebook,
-                          role: 'Sr. Engineer',
-                          salary: '\JD180,000/y',
-                          color: ColorStyles.cFFEBF3,
-                        ),
-                        PopularJobsCard(
-                          logo: Assets.facebookSvg,
-                          company: StaticText.facebook,
-                          role: 'UI Designer',
-                          salary: '\JD110,000/y',
-                          color: ColorStyles.cEBF1FF,
-                        ),
-                      ],
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 8.0,
+                        mainAxisSpacing: 20.0,
+                        childAspectRatio: 1,
+                      ),
+                      itemCount: 4,
+                      itemBuilder: (context, index) {
+                        return PopularJobsCard(
+                          logo: index % 2 == 0
+                              ? Assets.googleSvg
+                              : Assets.facebookSvg,
+                          company: index % 2 == 0
+                              ? StaticText.google
+                              : StaticText.facebook,
+                          role: index % 2 == 0 ? 'Sr. Engineer' : 'UI Designer',
+                          salary:
+                              index % 2 == 0 ? '\JD180,000/y' : '\JD110,000/y',
+                          color1: index % 2 == 0
+                              ? ColorStyles.cEBF1FF
+                              : ColorStyles.cFFEBF3,
+                          color2: index % 2 == 0
+                              ? ColorStyles.cFFEBF3
+                              : ColorStyles.cEBF1FF,
+                          duration: const Duration(seconds: 2),
+                        );
+                      },
                     ),
                   ],
                 ),
-
-                // POPULAR JOBS CARD
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class AnimatedCard extends StatelessWidget {
+  final int index;
+  final PageController pageController;
+
+  const AnimatedCard(
+      {Key? key, required this.index, required this.pageController})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: pageController,
+      builder: (BuildContext context, Widget? child) {
+        double value = 1.0;
+        if (pageController.position.haveDimensions) {
+          value = pageController.page! - index;
+          value = (1 - (value.abs() * 0.2)).clamp(0.0, 1.0);
+        }
+        return Center(
+          child: SizedBox(
+            height: Curves.easeInOut.transform(value) * 220,
+            width: Curves.easeInOut.transform(value) *
+                MediaQuery.of(context).size.width *
+                0.8,
+            child: child,
+          ),
+        );
+      },
+      child: DisplayCard(
+        companyName: index % 2 == 0 ? StaticText.google : StaticText.facebook,
+        role: index % 2 == 0
+            ? StaticText.productManager
+            : StaticText.softwareEngineer,
+        salary: index % 2 == 0 ? '\JD200,000/year' : '\JD180,000/year',
+        location: StaticText.california,
+        color:
+            index % 2 == 0 ? ColorStyles.c5386E4 : ColorStyles.defaultMainColor,
+        logo: index % 2 == 0 ? Assets.googleSvg : Assets.facebookSvg,
       ),
     );
   }

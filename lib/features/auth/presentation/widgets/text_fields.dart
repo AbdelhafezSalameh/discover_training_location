@@ -27,7 +27,7 @@ class CustomTextField extends StatefulWidget {
   final bool isErrorfull;
   final InputType inputType;
   final GlobalKey<FormState> formKey;
-  final void Function(String?)? onSaved; 
+  final void Function(String?)? onSaved;
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();

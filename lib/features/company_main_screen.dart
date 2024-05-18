@@ -1,25 +1,26 @@
 import 'package:discover_training_location/constants/assets_location.dart';
+import 'package:discover_training_location/constants/dimensions.dart';
+import 'package:discover_training_location/controllers/company_controller.dart';
 import 'package:discover_training_location/themes/color_styles.dart';
-import 'package:discover_training_location/controllers/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+class CompanyMainScreen extends StatefulWidget {
+  const CompanyMainScreen({Key? key}) : super(key: key);
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  State<CompanyMainScreen> createState() => _CompanyMainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _CompanyMainScreenState extends State<CompanyMainScreen> {
   @override
   Widget build(BuildContext context) {
-    return GetX<Controller>(
-      init: Controller(),
+    return GetX<CompanyController>(
+      init: CompanyController(),
       builder: (controller) => SafeArea(
         child: Scaffold(
-          body: controller.switchScreen(),
+          body: controller.CompanyswitchScreen(),
           bottomNavigationBar: BottomNavigationBar(
             items: [
               BottomNavigationBarItem(
@@ -46,17 +47,21 @@ class _MainScreenState extends State<MainScreen> {
                     : SvgPicture.asset(
                         Assets.navbarHome,
                       ),
-                label: '',
+                label: 'Home',
               ),
               BottomNavigationBarItem(
                 icon: controller.currentIndex == 1
                     ? Column(
                         children: [
-                          SvgPicture.asset(
-                            Assets.navbarMsg,
-                            colorFilter: const ColorFilter.mode(
-                              ColorStyles.defaultMainColor,
-                              BlendMode.srcIn,
+                          SizedBox(
+                            height: scaleHeight(30, context),
+                            width: scaleWidth(30, context),
+                            child: SvgPicture.asset(
+                              Assets.create,
+                              colorFilter: const ColorFilter.mode(
+                                ColorStyles.defaultMainColor,
+                                BlendMode.srcIn,
+                              ),
                             ),
                           ),
                           SvgPicture.asset(
@@ -68,17 +73,21 @@ class _MainScreenState extends State<MainScreen> {
                           ),
                         ],
                       )
-                    : SvgPicture.asset(
-                        Assets.navbarMsg,
+                    : SizedBox(
+                        height: scaleHeight(30, context),
+                        width: scaleWidth(30, context),
+                        child: SvgPicture.asset(
+                          Assets.create,
+                        ),
                       ),
-                label: '',
+                label: 'Create Training',
               ),
               BottomNavigationBarItem(
                 icon: controller.currentIndex == 2
                     ? Column(
                         children: [
                           SvgPicture.asset(
-                            Assets.navbarBookbar,
+                            Assets.profile,
                             colorFilter: const ColorFilter.mode(
                               ColorStyles.defaultMainColor,
                               BlendMode.srcIn,
@@ -94,34 +103,9 @@ class _MainScreenState extends State<MainScreen> {
                         ],
                       )
                     : SvgPicture.asset(
-                        Assets.navbarBookbar,
+                        Assets.profile,
                       ),
-                label: '',
-              ),
-              BottomNavigationBarItem(
-                icon: controller.currentIndex == 3
-                    ? Column(
-                        children: [
-                          SvgPicture.asset(
-                            Assets.navbarCategory,
-                            colorFilter: const ColorFilter.mode(
-                              ColorStyles.defaultMainColor,
-                              BlendMode.srcIn,
-                            ),
-                          ),
-                          SvgPicture.asset(
-                            Assets.navbarSelectedDot,
-                            colorFilter: const ColorFilter.mode(
-                              ColorStyles.defaultMainColor,
-                              BlendMode.srcIn,
-                            ),
-                          ),
-                        ],
-                      )
-                    : SvgPicture.asset(
-                        Assets.navbarCategory,
-                      ),
-                label: '',
+                label: 'Company Profile',
               ),
             ],
             currentIndex: controller.currentIndex,

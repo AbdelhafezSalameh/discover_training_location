@@ -277,25 +277,3 @@ Future<String?> login({
   }
 }
 
-Future<String?> getUserRole(String userId) async {
-  try {
-    DocumentSnapshot userSnapshot =
-        await FirebaseFirestore.instance.collection('users').doc(userId).get();
-
-    if (userSnapshot.exists) {
-      // هاي فيلد بالفايرستور عشان احدد المستخدمين
-      return userSnapshot.get('role');
-    } else {
-      // اذا ما عندي يوزر محدد
-      // ignore: avoid_print
-      print(
-          'User document does not exist in Firestore for user with ID: $userId');
-      return null;
-    }
-  } catch (e) {
-    // مشاكل تانية اذا صارت وقت ترجيع البيانات
-    // ignore: avoid_print
-    print('Error getting user role for user with ID: $userId - Error: $e');
-    return null;
-  }
-}

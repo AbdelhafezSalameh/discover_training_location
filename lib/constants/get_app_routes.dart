@@ -3,6 +3,7 @@ import 'package:discover_training_location/features/auth/presentation/screens/lo
 import 'package:discover_training_location/features/auth/presentation/screens/register_screen.dart';
 import 'package:discover_training_location/features/auth/presentation/screens/reset_password.dart';
 import 'package:discover_training_location/features/auth/presentation/screens/verify_code.dart';
+import 'package:discover_training_location/features/company_main_screen.dart';
 import 'package:discover_training_location/features/full_page_job.dart';
 import 'package:discover_training_location/features/main_screen.dart';
 import 'package:discover_training_location/features/saved_jobs_screen.dart';
@@ -71,6 +72,10 @@ class GetAppRoutes {
       GetPage(
         name: NamedRoutes.userProfile,
         page: () => UserProfile(),
+      ),
+      GetPage(
+        name: NamedRoutes.companyMainScreen,
+        page: () => const CompanyMainScreen(),
       ),
     ];
   }

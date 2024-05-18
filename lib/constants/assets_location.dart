@@ -40,8 +40,15 @@ class Assets {
   static const String editSquare = '$pathSvg/edit-square.svg';
   static const String profileImgSvg = '$pathSvg/Ellipse 782 (1).svg';
   static const String detailsContainer = '$pathSvg/Group 1.svg';
+  static const String create = '$pathSvg/create.svg';
+  static const String profile2 = '$pathSvg/profile2.svg';
+  static const String profile = '$pathSvg/profile.svg';
 
   // IMAGES
   static const String logoImage = '$pathImg/DTL.png';
   static const String profileImage = '$pathImg/ayat.png';
+  static const String createTrainig = '$pathImg/create training.png';
+  static const String validateCreateTrainig =
+      '$pathImg/validate create training.png';
+  static const String create2 = '$pathImg/create.png';
 }

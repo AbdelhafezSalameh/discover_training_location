@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:discover_training_location/constants/route_functions.dart';
+import 'package:discover_training_location/features/auth/data/services/firebase/firestoreService.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -35,17 +37,60 @@ class AuthFunctions {
     );
     if (message != null && message.contains(ErrorText.success)) {
       emailController.text = passWordController.text = '';
+      User? user = FirebaseAuth.instance.currentUser;
 
-      AppRoute.offNamedUntil(NamedRoutes.mainScreen);
+      if (user != null) {
+        // Get the user's role from Firestore
+        String? userRole = await getUserRole(user.uid);
+
+        if (userRole != null) {
+          // Navigate based on user role
+          if (userRole == 'student') {
+            // Navigate to student screen
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              NamedRoutes.mainScreen,
+              (route) => false,
+            );
+          } else if (userRole == 'company') {
+            // Navigate to company screen
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              NamedRoutes.companyMainScreen,
+              (route) => false,
+            );
+          }
+        } else {
+          // Handle case where user role is not defined
+          //  failureBar(ErrorText.undefinedUserRole, context);
+        }
+      }
     } else if (message!.contains(ErrorText.invalidEmail) ||
         message.contains(ErrorText.userNotFound)) {
       failureBar(StaticText.userNotFound, context);
     } else if (message.contains(ErrorText.wrongPassword)) {
       failureBar(ErrorText.wrongPassword, context);
-      // emailController.text = passWordController.text = '';
     } else {
       failureBar(ErrorText.invalidCredentials, context);
-      // emailController.text = passWordController.text = '';
+    }
+  }
+
+  // Function to fetch user role from Firestore
+  static Future<String?> getUserRole(String userId) async {
+    try {
+      DocumentSnapshot userSnapshot =
+          await FirestoreService().getUserDocument(userId);
+
+      if (userSnapshot.exists) {
+        // Get the user's role field from Firestore
+        return userSnapshot.get('role');
+      } else {
+        // Handle case where user document does not exist
+        return null;
+      }
+    } catch (e) {
+      // Handle any errors
+      return null;
     }
   }
 

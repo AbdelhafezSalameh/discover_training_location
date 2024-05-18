@@ -14,19 +14,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-class UserProfile extends StatefulWidget {
-  UserProfile({Key? key}) : super(key: key);
+class CompanyProfile extends StatefulWidget {
+  CompanyProfile({Key? key}) : super(key: key);
 
   @override
-  _UserProfileState createState() => _UserProfileState();
+  _CompanyProfileState createState() => _CompanyProfileState();
 }
 
-class _UserProfileState extends State<UserProfile> {
+class _CompanyProfileState extends State<CompanyProfile> {
   final AuthController _authController = Get.find<AuthController>();
 
   bool isLoading = false;
-  late String fullName = '';
-  late String email = '';
+  late String companyName = '';
+  late String companyEmail = '';
   String? profileImageUrl;
   final FirebaseStorageService _storageService = FirebaseStorageService();
 
@@ -35,7 +35,7 @@ class _UserProfileState extends State<UserProfile> {
     super.initState();
     profileImageUrl = null;
 
-    fetchUserData().then((_) {
+    fetchCompanyData().then((_) {
       setState(() {});
     });
   }
@@ -97,7 +97,7 @@ class _UserProfileState extends State<UserProfile> {
     }
   }
 
-  Future<void> fetchUserData() async {
+  Future<void> fetchCompanyData() async {
     final user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
@@ -108,8 +108,8 @@ class _UserProfileState extends State<UserProfile> {
             .get();
         if (snapshot.exists) {
           setState(() {
-            fullName = snapshot.get('fullName') ?? 'user user';
-            email = snapshot.get('email') ?? 'user@gmail.com';
+            companyName = snapshot.get('CompanyName') ?? 'Company Name';
+            companyEmail = snapshot.get('CompanyEmail') ?? 'Company Email';
             profileImageUrl = snapshot.get('profileImage') ?? '';
 
             if (profileImageUrl != null) {}
@@ -127,7 +127,7 @@ class _UserProfileState extends State<UserProfile> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Student Profile",
+          "Company Profile",
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
@@ -145,41 +145,42 @@ class _UserProfileState extends State<UserProfile> {
             Stack(
               children: [
                 GestureDetector(
-                  onTap: _getImage,
-                  child: Stack(
-                    children: [
-                      CircleAvatar(
-                        radius: scaleHeight(75, context),
-                        backgroundColor: Colors.grey[300],
-                        child: isLoading
-                            ? const CircularProgressIndicator()
-                            : profileImageUrl != null
-                                ? CircleAvatar(
-                                    radius: scaleHeight(75, context),
-                                    backgroundImage:
-                                        NetworkImage(profileImageUrl!),
-                                  )
-                                : null,
-                      ),
-                      if (profileImageUrl == null)
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: Container(
-                            padding: EdgeInsets.all(scaleHeight(6, context)),
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white,
-                            ),
-                            child: Icon(
-                              Icons.add,
-                              color: Colors.grey[500],
-                            ),
+                onTap: _getImage,
+                child: Stack(
+                  children: [
+                    CircleAvatar(
+                      radius:scaleHeight(75, context),
+                      backgroundColor: Colors.grey[300],
+                      child: isLoading
+                          ? const CircularProgressIndicator()
+                          : profileImageUrl != null
+                              ? CircleAvatar(
+                                  radius: scaleHeight(75, context),
+                                  backgroundImage:
+                                      NetworkImage(profileImageUrl!),
+                                )
+                              : null,
+                    ),
+                    if (profileImageUrl == null)
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Container(
+                          padding:
+                              EdgeInsets.all(scaleHeight(6, context)),
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                          ),
+                          child: Icon(
+                            Icons.add,
+                            color: Colors.grey[500],
                           ),
                         ),
-                    ],
-                  ),
+                      ),
+                  ],
                 ),
+              ),
               ],
             ),
             Padding(
@@ -188,14 +189,14 @@ class _UserProfileState extends State<UserProfile> {
                 child: Column(
                   children: [
                     Text(
-                      fullName,
+                      companyName,
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                     Text(
-                      email,
+                      companyEmail,
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
