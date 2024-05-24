@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:discover_training_location/constants/assets_location.dart';
 import 'package:discover_training_location/constants/dimensions.dart';
@@ -13,6 +12,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CompanyProfile extends StatefulWidget {
   CompanyProfile({Key? key}) : super(key: key);
@@ -29,6 +29,13 @@ class _CompanyProfileState extends State<CompanyProfile> {
   late String companyEmail = '';
   String? profileImageUrl;
   final FirebaseStorageService _storageService = FirebaseStorageService();
+
+  Future<void> launchUrlButton(String link) async {
+    final Uri url = Uri.parse(link);
+    if (!await launchUrl(url)) {
+      throw Exception('Could not launch $url');
+    }
+  }
 
   @override
   void initState() {
@@ -76,8 +83,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
         final ref = FirebaseStorage.instance
             .ref()
             .child('profile_images')
-            // ignore: prefer_interpolation_to_compose_strings
-            .child(user.uid + '.jpg');
+            .child('${user.uid}.jpg');
 
         await ref.putFile(imageFile);
 
@@ -111,12 +117,9 @@ class _CompanyProfileState extends State<CompanyProfile> {
             companyName = snapshot.get('CompanyName') ?? 'Company Name';
             companyEmail = snapshot.get('CompanyEmail') ?? 'Company Email';
             profileImageUrl = snapshot.get('profileImage') ?? '';
-
-            if (profileImageUrl != null) {}
           });
         }
       } catch (e) {
-        // ignore: avoid_print
         print('Error fetching user data from Firestore: $e');
       }
     }
@@ -142,46 +145,50 @@ class _CompanyProfileState extends State<CompanyProfile> {
         child: Column(
           children: [
             SizedBox(height: scaleHeight(20, context)),
-            Stack(
-              children: [
-                GestureDetector(
-                onTap: _getImage,
-                child: Stack(
-                  children: [
-                    CircleAvatar(
-                      radius:scaleHeight(75, context),
-                      backgroundColor: Colors.grey[300],
-                      child: isLoading
-                          ? const CircularProgressIndicator()
-                          : profileImageUrl != null
-                              ? CircleAvatar(
-                                  radius: scaleHeight(75, context),
-                                  backgroundImage:
-                                      NetworkImage(profileImageUrl!),
-                                )
-                              : null,
-                    ),
-                    if (profileImageUrl == null)
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: Container(
-                          padding:
-                              EdgeInsets.all(scaleHeight(6, context)),
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                          child: Icon(
-                            Icons.add,
-                            color: Colors.grey[500],
-                          ),
+            GestureDetector(
+              onTap: _getImage,
+              child: Stack(
+                children: [
+                  CircleAvatar(
+                    radius: scaleHeight(75, context),
+                    backgroundColor: Colors.grey[300],
+                    child: isLoading
+                        ? const CircularProgressIndicator()
+                        : profileImageUrl != null
+                            ? CircleAvatar(
+                                radius: scaleHeight(75, context),
+                                backgroundImage: NetworkImage(profileImageUrl!),
+                              )
+                            : Icon(
+                                Icons.person,
+                                size: scaleHeight(75, context),
+                                color: Colors.grey[500],
+                              ),
+                  ),
+                  if (profileImageUrl == null)
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        padding: EdgeInsets.all(scaleHeight(6, context)),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 4,
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          Icons.add,
+                          color: Colors.grey[500],
                         ),
                       ),
-                  ],
-                ),
+                    ),
+                ],
               ),
-              ],
             ),
             Padding(
               padding: EdgeInsets.all(scaleWidth(10, context)),
@@ -191,15 +198,16 @@ class _CompanyProfileState extends State<CompanyProfile> {
                     Text(
                       companyName,
                       style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
                       companyEmail,
                       style: const TextStyle(
                         fontSize: 18,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey,
                       ),
                     ),
                   ],
@@ -210,9 +218,11 @@ class _CompanyProfileState extends State<CompanyProfile> {
             ProfileMenu(
               text: "Privacy Policy",
               icon: "assets/icons/Privacy-Policy.svg",
-              url:
+              onTap: () {
+                launchUrlButton(
                   "https://www.freeprivacypolicy.com/live/3aa8d923-3725-425c-b86a-75bb537ec80d",
-              onTap: () => {},
+                );
+              },
             ),
             ProfileMenu(
               text: "Settings",

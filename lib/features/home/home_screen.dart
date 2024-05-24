@@ -6,13 +6,17 @@ import 'package:discover_training_location/constants/assets_location.dart';
 import 'package:discover_training_location/constants/dimensions.dart';
 import 'package:discover_training_location/constants/named_routes.dart';
 import 'package:discover_training_location/constants/strings.dart';
+import 'package:discover_training_location/controllers/training_controller.dart';
 import 'package:discover_training_location/features/auth/data/services/firebase/FireBase_Storge.dart';
+import 'package:discover_training_location/features/full_training.dart';
+import 'package:discover_training_location/features/widgets/bottom_sheet_content.dart';
 import 'package:discover_training_location/features/widgets/display_card.dart';
 import 'package:discover_training_location/features/widgets/featured_jobs_tile.dart';
 import 'package:discover_training_location/features/widgets/popular_jobs_card.dart';
 import 'package:discover_training_location/features/widgets/profile_header.dart';
 import 'package:discover_training_location/features/widgets/search_job.dart';
 import 'package:discover_training_location/features/widgets/vetical_space.dart';
+import 'package:discover_training_location/modals/data/full_training_model.dart';
 import 'package:discover_training_location/themes/color_styles.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +38,9 @@ class _HomeScreenState extends State<HomeScreen> {
   late String fullName = '';
   String? profileImageUrl;
   bool isLoading = false;
+  String companyName = '';
+  final TrainingController trainingController = Get.find();
+  // String companyId = FirebaseAuth.instance.currentUser?.uid ?? '';
 
   final FirebaseStorageService _storageService = FirebaseStorageService();
   @override
@@ -55,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     profileImageUrl = null;
-
+    trainingController.fetchTrainings();
     fetchUserData().then((_) {
       setState(() {});
     });
@@ -119,6 +126,97 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       }
     }
+  }
+
+  void _showJobDetailsBottomSheet(BuildContext context, Training training) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return BottomSheetContent(
+          title: '$companyName\n${training.position}',
+          description: training.description,
+          imagePath: Assets.validateCreateTrainig,
+          buttonText: 'Show Details',
+          onTapButton: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FullTraining(training: training),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget buildActiveTabContent(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        scaleWidth(24, context),
+        scaleHeight(42, context),
+        scaleWidth(24, context),
+        scaleHeight(16, context),
+      ),
+      child: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('FeaturedTrainings')
+            .snapshots(),
+        builder: (context, snapshot) {
+          // trainingController.fetchTrainings(companyId: companyId);
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // trainingController.fetchTrainings(companyId: companyId);
+
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return const Center(child: Text('No trainings available'));
+          }
+
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 8.0,
+                    mainAxisSpacing: 20.0,
+                    childAspectRatio: 1,
+                  ),
+                  itemCount: trainingController.trainings.length,
+                  itemBuilder: (context, index) {
+                    final training = trainingController.trainings[index];
+
+                    return GestureDetector(
+                      onTap: () {
+                        _showJobDetailsBottomSheet(context, training);
+                      },
+                      child: PopularJobsCard(
+                        logo: Assets.googleSvg,
+                        company: companyName,
+                        role: training.position,
+                        salary: training.salary,
+                        color1: index % 2 == 0
+                            ? ColorStyles.cEBF1FF
+                            : ColorStyles.cFFEBF3,
+                        color2: index % 2 == 0
+                            ? ColorStyles.cFFEBF3
+                            : ColorStyles.cEBF1FF,
+                        duration: const Duration(seconds: 2),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
   }
 
   @override
@@ -214,37 +312,38 @@ class _HomeScreenState extends State<HomeScreen> {
                       value: 20,
                       ctx: context,
                     ),
-                    GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 8.0,
-                        mainAxisSpacing: 20.0,
-                        childAspectRatio: 1,
-                      ),
-                      itemCount: 4,
-                      itemBuilder: (context, index) {
-                        return PopularJobsCard(
-                          logo: index % 2 == 0
-                              ? Assets.googleSvg
-                              : Assets.facebookSvg,
-                          company: index % 2 == 0
-                              ? StaticText.google
-                              : StaticText.facebook,
-                          role: index % 2 == 0 ? 'Sr. Engineer' : 'UI Designer',
-                          salary:
-                              index % 2 == 0 ? '\JD180,000/y' : '\JD110,000/y',
-                          color1: index % 2 == 0
-                              ? ColorStyles.cEBF1FF
-                              : ColorStyles.cFFEBF3,
-                          color2: index % 2 == 0
-                              ? ColorStyles.cFFEBF3
-                              : ColorStyles.cEBF1FF,
-                          duration: const Duration(seconds: 2),
-                        );
-                      },
-                    ),
+                    buildActiveTabContent(context),
+                    // GridView.builder(
+                    //   shrinkWrap: true,
+                    //   physics: const NeverScrollableScrollPhysics(),
+                    //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    //     crossAxisCount: 2,
+                    //     crossAxisSpacing: 8.0,
+                    //     mainAxisSpacing: 20.0,
+                    //     childAspectRatio: 1,
+                    //   ),
+                    //   itemCount: 4,
+                    //   itemBuilder: (context, index) {
+                    //     return PopularJobsCard(
+                    //       logo: index % 2 == 0
+                    //           ? Assets.googleSvg
+                    //           : Assets.facebookSvg,
+                    //       company: index % 2 == 0
+                    //           ? StaticText.google
+                    //           : StaticText.facebook,
+                    //       role: index % 2 == 0 ? 'Sr. Engineer' : 'UI Designer',
+                    //       salary:
+                    //           index % 2 == 0 ? '\JD180,000/y' : '\JD110,000/y',
+                    //       color1: index % 2 == 0
+                    //           ? ColorStyles.cEBF1FF
+                    //           : ColorStyles.cFFEBF3,
+                    //       color2: index % 2 == 0
+                    //           ? ColorStyles.cFFEBF3
+                    //           : ColorStyles.cEBF1FF,
+                    //       duration: const Duration(seconds: 2),
+                    //     );
+                    //   },
+                    // ),
                   ],
                 ),
               ),

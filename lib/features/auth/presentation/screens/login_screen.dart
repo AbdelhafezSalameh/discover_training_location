@@ -1,6 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:discover_training_location/features/auth/data/controllers/auth_functions.dart';
-import 'package:discover_training_location/features/auth/data/controllers/keyboard.dart';
 import 'package:discover_training_location/features/auth/data/controllers/validation.dart';
 import 'package:discover_training_location/features/auth/data/services/firebase/auth_service.dart';
 import 'package:discover_training_location/features/auth/presentation/widgets/login_button.dart';
@@ -9,7 +7,6 @@ import 'package:discover_training_location/features/widgets/custom_scaffold.dart
 import 'package:discover_training_location/features/widgets/horizontal_space.dart';
 import 'package:discover_training_location/features/widgets/vetical_space.dart';
 import 'package:discover_training_location/features/widgets/welcome_text.dart';
-import 'package:discover_training_location/themes/color_styles.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,8 +14,6 @@ import 'package:discover_training_location/constants/assets_location.dart';
 import 'package:discover_training_location/constants/dimensions.dart';
 import 'package:discover_training_location/constants/named_routes.dart';
 import 'package:discover_training_location/constants/strings.dart';
-import 'package:get/get.dart';
-import 'package:http/http.dart';
 
 class LogIn extends StatefulWidget {
   const LogIn({super.key});
@@ -28,7 +23,6 @@ class LogIn extends StatefulWidget {
 }
 
 class _LogInState extends State<LogIn> {
-  bool _isLoading = false;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
@@ -38,23 +32,18 @@ class _LogInState extends State<LogIn> {
   bool isErrorFull = false;
   String? email;
   String? password;
-  final AuthService _auth = AuthService();
   bool rememberPassword = true;
 Future<String?> login({
   required String email,
   required String password,
 }) async {
   try {
-    // Create an instance of AuthService
     AuthService authService = AuthService();
 
-    // Check if the email is registered in Firestore
     bool isEmailRegistered = await authService.isEmailRegistered(email);
     if (!isEmailRegistered) {
       return 'Email is not registered.';
     }
-
-    // Proceed with signing in
     await FirebaseAuth.instance.signInWithEmailAndPassword(
       email: email,
       password: password,
@@ -62,7 +51,6 @@ Future<String?> login({
     
     return 'success';
   } on FirebaseAuthException catch (e) {
-    // Handle Firebase Auth exceptions
     if (e.code == 'invalid-email') {
       return e.code;
     } else if (e.code == 'user-not-found') {
@@ -145,8 +133,6 @@ Future<String?> login({
                               inputType: InputType.password,
                               formKey: _formKey,
                             ),
-                            // if (isErrorPassword)
-                            //   const ValidationError(errorText: 'Invalid password'),
                             VerticalSpace(value: 32, ctx: context),
                             LoginButton(
                               loginText: StaticText.logIn,
@@ -262,9 +248,6 @@ Future<String?> login({
                           ),
                         ],
                       ),
-
-                      // * CONTINUE WITH
-                      //   const ContinueWithOtherAccounts(isLogin: true),
                     ],
                   ),
                 ),

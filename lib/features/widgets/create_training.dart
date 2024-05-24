@@ -7,6 +7,7 @@ import 'package:discover_training_location/features/auth/presentation/widgets/te
 import 'package:discover_training_location/features/widgets/bottom_sheet_content.dart';
 import 'package:discover_training_location/features/widgets/custom_elevated_button%20.dart';
 import 'package:discover_training_location/themes/font_styles.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:draggable_home/draggable_home.dart';
@@ -20,22 +21,39 @@ class CreateTraining extends StatelessWidget {
   Future<void> saveToFirestore() async {
     if (formKey.currentState!.validate()) {
       try {
-        await FirebaseFirestore.instance.collection('FeaturedTrainings').add({
-          'description': controller.descriptionController.text,
-          'responsibilities': controller.responsibilitiesController.text,
-          'benefits': controller.benefitsController.text,
-          'position': controller.positionController.text,
-          'locationLink': controller.locationLinkController.text,
-          'salary': controller.salaryController.text,
-          'duration': controller.selectedDuration.value,
-          'timeWork': controller.selectedTimeWork.value,
-          'typeWork': controller.selectedTypeWork.value,
-        });
-        Get.snackbar('Success', 'Training created successfully');
+        final user = FirebaseAuth.instance.currentUser;
+        if (user != null) {
+          await FirebaseFirestore.instance.collection('FeaturedTrainings').add({
+            'description': controller.descriptionController.text,
+            'responsibilities': controller.responsibilitiesController.text,
+            'benefits': controller.benefitsController.text,
+            'position': controller.positionController.text,
+            'locationLink': controller.locationLinkController.text,
+            'salary': controller.salaryController.text,
+            'duration': controller.selectedDuration.value,
+            'timeWork': controller.selectedTimeWork.value,
+            'typeWork': controller.selectedTypeWork.value,
+            'companyId': user.uid,
+          });
+          Get.snackbar('Success', 'Training created successfully');
+          clearTextFields();
+        }
       } catch (e) {
         Get.snackbar('Error', 'Failed to create training: $e');
       }
     }
+  }
+
+  void clearTextFields() {
+    controller.descriptionController.clear();
+    controller.responsibilitiesController.clear();
+    controller.benefitsController.clear();
+    controller.positionController.clear();
+    controller.locationLinkController.clear();
+    controller.salaryController.clear();
+    controller.selectedDuration.value = controller.durationOptions.first;
+    controller.selectedTimeWork.value = controller.timeWorkOptions.first;
+    controller.selectedTypeWork.value = controller.typeWorkOptions.first;
   }
 
   @override
@@ -191,25 +209,29 @@ class CreateTraining extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: scaleWidth(20, context)),
-                CustomElevatedButton(
-                  ButtonText: 'Create Training',
-                  onTapButton: () {
-                    showModalBottomSheet(
-                      context: context,
-                      builder: (context) => BottomSheetContent(
-                        onTapButton: () async {
-                          await saveToFirestore();
-                          Navigator.pop(context);
-                        },
-                        buttonText: 'Confirm',
-                        imagePath: Assets.validateCreateTrainig,
-                        title: 'Confirm Training Creation',
-                        description:
-                            'Are you sure you want wo create this training?',
-                      ),
-                    );
-                  },
+                SizedBox(height: scaleWidth(10, context)),
+                Obx(
+                  () => CustomElevatedButton(
+                    ButtonText: 'Create Training',
+                    onTapButton: controller.isButtonActive.value
+                        ? () {
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (context) => BottomSheetContent(
+                                imagePath: Assets.validateCreateTrainig,
+                                title: 'Confirm Training Creation',
+                                description:
+                                    'Are you sure you want to create training?',
+                                onTapButton: () async {
+                                  await saveToFirestore();
+                                  Navigator.pop(context);
+                                },
+                                buttonText: 'Confirm',
+                              ),
+                            );
+                          }
+                        : null,
+                  ),
                 ),
               ],
             ),
@@ -224,10 +246,11 @@ class CreateTraining extends StatelessWidget {
   }
 
   Widget headerWidget(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Image.asset(Assets.createTrainig),
-      ),
+    return Image.asset(
+      Assets.createTrainig,
+      fit: BoxFit.cover,
+      height: scaleHeight(250, context),
+      width: MediaQuery.of(context).size.width,
     );
   }
 }

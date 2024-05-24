@@ -13,6 +13,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class UserProfile extends StatefulWidget {
   UserProfile({Key? key}) : super(key: key);
@@ -29,6 +30,12 @@ class _UserProfileState extends State<UserProfile> {
   late String email = '';
   String? profileImageUrl;
   final FirebaseStorageService _storageService = FirebaseStorageService();
+  Future<void> launchUrlButton(String link) async {
+    final Uri url = Uri.parse(link);
+    if (!await launchUrl(url)) {
+      throw Exception('Could not launch $url');
+    }
+  }
 
   @override
   void initState() {
@@ -209,9 +216,11 @@ class _UserProfileState extends State<UserProfile> {
             ProfileMenu(
               text: "Privacy Policy",
               icon: "assets/icons/Privacy-Policy.svg",
-              url:
+              onTap: () {
+                launchUrlButton(
                   "https://www.freeprivacypolicy.com/live/3aa8d923-3725-425c-b86a-75bb537ec80d",
-              onTap: () => {},
+                );
+              },
             ),
             ProfileMenu(
               text: "Settings",

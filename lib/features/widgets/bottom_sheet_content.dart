@@ -14,8 +14,8 @@ class BottomSheetContent extends StatelessWidget {
     Key? key,
     required this.onTapButton,
     required this.buttonText,
-    required this.imagePath, 
-    required this.title, 
+    required this.imagePath,
+    required this.title,
     required this.description,
   }) : super(key: key);
 

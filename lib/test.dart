@@ -1,136 +1,144 @@
-import 'package:flutter/material.dart';
-import 'package:pulsator/pulsator.dart';
+// import 'package:chat_gpt_flutter/chat_gpt_flutter.dart';
+// import 'package:flutter/material.dart';
 
-class TestScreen extends StatefulWidget {
-  const TestScreen({super.key});
+// void main() => runApp(const MyApp());
 
-  @override
-  State<TestScreen> createState() => _TestScreenState();
-}
+// // Replace with your own API key
+// const apiKey = "your_api_key_here";
 
-class _TestScreenState extends State<TestScreen> {
-  int _count = 4;
-  int _duration = 3;
-  int _repeatCount = 0;
+// final chatGpt = ChatGpt(apiKey: apiKey);
 
-  void _handleCountChanged(double value) =>
-      setState(() => _count = value.toInt());
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
 
-  void _handleDurationChanged(double value) =>
-      setState(() => _duration = value.toInt());
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'Flutter Demo',
+//       theme: ThemeData(
+//         primarySwatch: Colors.blue,
+//         inputDecorationTheme: InputDecorationTheme(
+//           isDense: true,
+//           fillColor: Colors.transparent,
+//           border: OutlineInputBorder(
+//             borderRadius: BorderRadius.circular(12),
+//             borderSide: const BorderSide(color: Colors.black, width: 2),
+//           ),
+//         ),
+//       ),
+//       home: DefaultTabController(
+//         length: 2,
+//         child: Scaffold(
+//           appBar: AppBar(
+//             bottom: const TabBar(
+//               tabs: [
+//                 Tab(icon: Text('Chat completion')),
+//                 Tab(icon: Text('Completion')),
+//               ],
+//             ),
+//           ),
+//           body: const TabBarView(
+//             children: [
+//               ChatCompletionPage(chatGpt: chatGpt),
+//               CompletionPage(chatGpt: chatGpt),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
 
-  void _handleRepeatCountChanged(double value) =>
-      setState(() => _repeatCount = value.toInt());
+// class ChatCompletionPage extends StatefulWidget {
+//   final ChatGpt chatGpt;
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Pulsator')),
-      body: SafeArea(
-        bottom: true,
-        child: Column(
-          children: [
-            Expanded(
-              child: Stack(
-                children: [
-                  Pulsator(
-                    style: const PulseStyle(color: Colors.red),
-                    count: _count,
-                    duration: Duration(seconds: _duration),
-                    repeat: _repeatCount,
-                  ),
-                  Center(
-                    child: Image.asset(
-                      'assets/android_phone.png',
-                      width: 128,
-                      height: 128,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(24),
-              child: _Controls(
-                count: _count,
-                duration: _duration,
-                repeatCount: _repeatCount,
-                onCountChanged: _handleCountChanged,
-                onDurationChanged: _handleDurationChanged,
-                onRepeatCountChanged: _handleRepeatCountChanged,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+//   const ChatCompletionPage({required this.chatGpt, super.key});
 
-class _Controls extends StatelessWidget {
-  const _Controls({
-    required this.count,
-    required this.duration,
-    required this.repeatCount,
-    required this.onCountChanged,
-    required this.onDurationChanged,
-    required this.onRepeatCountChanged,
-  });
+//   @override
+//   _ChatCompletionPageState createState() => _ChatCompletionPageState();
+// }
 
-  final int count;
-  final int duration;
-  final int repeatCount;
-  final ValueChanged<double> onCountChanged;
-  final ValueChanged<double> onDurationChanged;
-  final ValueChanged<double> onRepeatCountChanged;
+// class _ChatCompletionPageState extends State<ChatCompletionPage> {
+//   final TextEditingController _controller = TextEditingController();
+//   String _response = '';
 
-  @override
-  Widget build(BuildContext context) {
-    return Table(
-      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-      columnWidths: const {
-        0: FixedColumnWidth(70),
-        1: FlexColumnWidth(),
-        2: FixedColumnWidth(30),
-      },
-      children: [
-        TableRow(
-          children: [
-            const Text('Count', textAlign: TextAlign.right),
-            Slider(
-              value: count.toDouble(),
-              min: 1,
-              max: 9,
-              onChanged: onCountChanged,
-            ),
-            Text(count.toString()),
-          ],
-        ),
-        TableRow(
-          children: [
-            const Text('Duration', textAlign: TextAlign.right),
-            Slider(
-              value: duration.toDouble(),
-              min: 1,
-              max: 6,
-              onChanged: onDurationChanged,
-            ),
-            Text(duration.toString()),
-          ],
-        ),
-        TableRow(
-          children: [
-            const Text('Repeats', textAlign: TextAlign.right),
-            Slider(
-              value: repeatCount.toDouble(),
-              min: 0,
-              max: 10,
-              onChanged: onRepeatCountChanged,
-            ),
-            Text(repeatCount.toString()),
-          ],
-        ),
-      ],
-    );
-  }
-}
+//   void _sendMessage() async {
+//     final response = await widget.chatGpt.sendMessage(_controller.text);
+//     setState(() {
+//       _response = response;
+//     });
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       children: [
+//         Padding(
+//           padding: const EdgeInsets.all(8.0),
+//           child: TextField(
+//             controller: _controller,
+//             decoration: InputDecoration(
+//               hintText: 'Enter your message',
+//               border: OutlineInputBorder(),
+//             ),
+//           ),
+//         ),
+//         ElevatedButton(
+//           onPressed: _sendMessage,
+//           child: const Text('Send'),
+//         ),
+//         Padding(
+//           padding: const EdgeInsets.all(8.0),
+//           child: Text(_response),
+//         ),
+//       ],
+//     );
+//   }
+// }
+
+// class CompletionPage extends StatefulWidget {
+//   final ChatGpt chatGpt;
+
+//   const CompletionPage({required this.chatGpt, super.key});
+
+//   @override
+//   _CompletionPageState createState() => _CompletionPageState();
+// }
+
+// class _CompletionPageState extends State<CompletionPage> {
+//   final TextEditingController _controller = TextEditingController();
+//   String _response = '';
+
+//   void _sendPrompt() async {
+//     final response = await widget.chatGpt.completePrompt(_controller.text);
+//     setState(() {
+//       _response = response;
+//     });
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       children: [
+//         Padding(
+//           padding: const EdgeInsets.all(8.0),
+//           child: TextField(
+//             controller: _controller,
+//             decoration: InputDecoration(
+//               hintText: 'Enter your prompt',
+//               border: OutlineInputBorder(),
+//             ),
+//           ),
+//         ),
+//         ElevatedButton(
+//           onPressed: _sendPrompt,
+//           child: const Text('Send'),
+//         ),
+//         Padding(
+//           padding: const EdgeInsets.all(8.0),
+//           child: Text(_response),
+//         ),
+//       ],
+//     );
+//   }
+// }

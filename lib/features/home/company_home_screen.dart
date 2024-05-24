@@ -1,16 +1,17 @@
 import 'dart:async';
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:discover_training_location/constants/assets_location.dart';
-import 'package:discover_training_location/constants/dimensions.dart';
-import 'package:discover_training_location/constants/strings.dart';
-import 'package:discover_training_location/features/widgets/popular_jobs_card.dart';
-import 'package:discover_training_location/features/widgets/profile_header.dart';
-import 'package:discover_training_location/themes/color_styles.dart';
+import 'package:discover_training_location/features/full_training.dart';
+import 'package:discover_training_location/modals/data/full_training_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:discover_training_location/controllers/training_controller.dart';
+import 'package:discover_training_location/constants/assets_location.dart';
+import 'package:discover_training_location/constants/dimensions.dart';
+import 'package:discover_training_location/features/widgets/bottom_sheet_content.dart';
+import 'package:discover_training_location/features/widgets/popular_jobs_card.dart';
+import 'package:discover_training_location/features/widgets/profile_header.dart';
+import 'package:discover_training_location/themes/color_styles.dart';
 
 class CompanyHomeScreen extends StatefulWidget {
   const CompanyHomeScreen({Key? key}) : super(key: key);
@@ -23,8 +24,9 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
   late PageController _pageController;
   late Timer _timer;
   int _currentPage = 0;
-  File? image;
-  late String companyName = '';
+  String companyName = '';
+  final TrainingController trainingController = Get.find();
+  String companyId = FirebaseAuth.instance.currentUser?.uid ?? '';
 
   @override
   void initState() {
@@ -32,19 +34,18 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
     _pageController = PageController(initialPage: 0);
 
     _timer = Timer.periodic(const Duration(seconds: 4), (Timer timer) {
-      if (_currentPage < 3) {
-        _currentPage++;
-      } else {
-        _currentPage = 0;
-      }
-      _pageController.animateToPage(
-        _currentPage,
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeInOut,
-      );
+      setState(() {
+        _currentPage = (_currentPage + 1) % 4;
+        _pageController.animateToPage(
+          _currentPage,
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeInOut,
+        );
+      });
     });
 
     fetchUserDataFromFirestore();
+    trainingController.fetchTrainings();
   }
 
   @override
@@ -63,14 +64,37 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
             .doc(user.uid)
             .get();
         if (snapshot.exists) {
+          final data = snapshot.data();
           setState(() {
-            companyName = snapshot.get('CompanyName') ?? '';
+            companyName = data?['CompanyName'] ?? 'Unknown Company';
           });
         }
       } catch (e) {
         print('Error fetching user data from Firestore: $e');
       }
     }
+  }
+
+  void _showJobDetailsBottomSheet(BuildContext context, Training training) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return BottomSheetContent(
+          title: '$companyName\n${training.position}',
+          description: training.description,
+          imagePath: Assets.validateCreateTrainig,
+          buttonText: 'Show Details',
+          onTapButton: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FullTraining(training: training),
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   Widget buildTabBar() {
@@ -92,59 +116,32 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
               color: const Color.fromARGB(255, 180, 202, 253),
             ),
             tabs: [
-              Tab(
-                child: Container(
-                  height: scaleHeight(50, context),
-                  width: scaleWidth(70, context),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    border: Border.all(
-                        color: const Color.fromARGB(255, 180, 202, 253),
-                        width: 1),
-                  ),
-                  child: const Align(
-                    alignment: Alignment.center,
-                    child:
-                        Text("Active", style: TextStyle(color: Colors.black54)),
-                  ),
-                ),
-              ),
-              Tab(
-                child: Container(
-                  height: scaleHeight(50, context),
-                  width: scaleWidth(70, context),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    border: Border.all(
-                        color: const Color.fromARGB(255, 180, 202, 253),
-                        width: 1),
-                  ),
-                  child: const Align(
-                    alignment: Alignment.center,
-                    child: Text("Pending",
-                        style: TextStyle(color: Colors.black54)),
-                  ),
-                ),
-              ),
-              Tab(
-                child: Container(
-                  height: scaleHeight(50, context),
-                  width: scaleWidth(70, context),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    border: Border.all(
-                        color: Color.fromARGB(177, 244, 67, 54), width: 1),
-                  ),
-                  child: const Align(
-                    alignment: Alignment.center,
-                    child: Text("Deleted",
-                        style:
-                            TextStyle(color: Color.fromARGB(177, 244, 67, 54))),
-                  ),
-                ),
-              ),
+              buildTab("Active", ColorStyles.cEBF1FF, Colors.black54),
+              buildTab("Pending", ColorStyles.cEBF1FF, Colors.black54),
+              buildTab("Deleted", const Color.fromARGB(177, 244, 67, 54),
+                  const Color.fromARGB(177, 244, 67, 54)),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildTab(String title, Color borderColor, Color textColor) {
+    return Tab(
+      child: Container(
+        height: scaleHeight(50, context),
+        width: scaleWidth(70, context),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(
+            color: borderColor,
+            width: 1,
+          ),
+        ),
+        child: Align(
+          alignment: Alignment.center,
+          child: Text(title, style: TextStyle(color: textColor)),
         ),
       ),
     );
@@ -158,25 +155,61 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
         scaleWidth(24, context),
         scaleHeight(16, context),
       ),
-      child: GridView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 8.0,
-          mainAxisSpacing: 20.0,
-          childAspectRatio: 1,
-        ),
-        itemCount: 4,
-        itemBuilder: (context, index) {
-          return PopularJobsCard(
-            logo: index % 2 == 0 ? Assets.googleSvg : Assets.facebookSvg,
-            company: index % 2 == 0 ? StaticText.google : StaticText.facebook,
-            role: index % 2 == 0 ? 'Sr. Engineer' : 'UI Designer',
-            salary: index % 2 == 0 ? '\JD180,000/y' : '\JD110,000/y',
-            color1: index % 2 == 0 ? ColorStyles.cEBF1FF : ColorStyles.cFFEBF3,
-            color2: index % 2 == 0 ? ColorStyles.cFFEBF3 : ColorStyles.cEBF1FF,
-            duration: const Duration(seconds: 2),
+      child: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('FeaturedTrainings')
+            .snapshots(),
+        builder: (context, snapshot) {
+          trainingController.fetchTrainings(companyId: companyId);
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            trainingController.fetchTrainings(companyId: companyId);
+
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return const Center(child: Text('No trainings available'));
+          }
+
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 8.0,
+                    mainAxisSpacing: 20.0,
+                    childAspectRatio: 1,
+                  ),
+                  itemCount: trainingController.trainings.length,
+                  itemBuilder: (context, index) {
+                    final training = trainingController.trainings[index];
+
+                    return GestureDetector(
+                      onTap: () {
+                        _showJobDetailsBottomSheet(context, training);
+                      },
+                      child: PopularJobsCard(
+                        logo: Assets.googleSvg,
+                        company: companyName,
+                        role: training.position,
+                        salary: training.salary,
+                        color1: index % 2 == 0
+                            ? ColorStyles.cEBF1FF
+                            : ColorStyles.cFFEBF3,
+                        color2: index % 2 == 0
+                            ? ColorStyles.cFFEBF3
+                            : ColorStyles.cEBF1FF,
+                        duration: const Duration(seconds: 2),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
           );
         },
       ),
@@ -199,8 +232,8 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                 child: Row(
                   children: [
                     ProfileHeader(
-                      lightWelcomeText: StaticText.welcomeBackProfile.tr,
-                      boldWelcomeText: '$companyName',
+                      lightWelcomeText: 'Welcome Back,',
+                      boldWelcomeText: companyName,
                     ),
                   ],
                 ),
@@ -210,8 +243,8 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                 child: TabBarView(
                   children: [
                     buildActiveTabContent(context),
-                    Center(child: Text('Pending Content')),
-                    Center(child: Text('Deleted Content')),
+                    const Center(child: Text('Pending Content')),
+                    const Center(child: Text('Deleted Content')),
                   ],
                 ),
               ),

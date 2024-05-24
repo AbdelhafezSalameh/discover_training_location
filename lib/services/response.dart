@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'package:discover_training_location/constants/data_location.dart';
 import 'package:discover_training_location/services/request.dart';
-import 'package:http/http.dart' as http;
-
 class ResponseService {
   ResponseService._();
 

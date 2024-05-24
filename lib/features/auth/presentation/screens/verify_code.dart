@@ -28,8 +28,6 @@ class _VerifyCodeState extends State<VerifyCode> {
 
   @override
   Widget build(BuildContext context) {
-    final String? realOtp =
-        ModalRoute.of(context)?.settings.arguments as String?;
 
     return SafeArea(
       child: Scaffold(

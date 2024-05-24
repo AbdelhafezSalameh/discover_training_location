@@ -15,6 +15,7 @@ class CompanyController extends GetxController {
 
   final RxInt _tabController = 0.obs;
   static CompanyController get to => Get.find();
+  // ignore: non_constant_identifier_names
   Widget CompanyswitchScreen() {
     return _tabs[_currentIndex.value];
   }

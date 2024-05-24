@@ -9,7 +9,6 @@ import 'package:discover_training_location/features/home/company_home_screen.dar
 import 'package:discover_training_location/features/home/home_screen.dart';
 import 'package:discover_training_location/constants/named_routes.dart';
 import 'package:discover_training_location/features/widgets/user_profile.dart';
-import 'package:discover_training_location/test.dart';
 import 'package:discover_training_location/utils/splash_screen.dart';
 import 'package:discover_training_location/utils/success_screen.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +28,7 @@ class AppRoutes {
       NamedRoutes.homeScreen: (context) => const HomeScreen(),
       NamedRoutes.fullPageJob: (context) => const FullPageJob(),
       NamedRoutes.userProfile: (context) => UserProfile(),
-      NamedRoutes.testScreen: (context) => TestScreen(),
+      // NamedRoutes.testScreen: (context) => TestScreen(),
       NamedRoutes.companyMainScreen: (context) => const CompanyMainScreen(),
       NamedRoutes.companyHomeScreen: (context) => const CompanyHomeScreen(),
     };

@@ -1,18 +1,13 @@
 import 'package:discover_training_location/app_job_search.dart';
 import 'package:discover_training_location/controllers/controller.dart';
 import 'package:discover_training_location/controllers/data_controller.dart';
+import 'package:discover_training_location/controllers/training_controller.dart';
 import 'package:discover_training_location/features/auth/data/controllers/auth_controller.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-// void main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   await Firebase.initializeApp();
-//   Get.put(DataController());
-//   runApp(const JobSearchApp());
-// }
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -35,5 +30,7 @@ void main() async {
   Get.put(AuthController());
 
   Get.put(DataController());
+  Get.put(TrainingController());
   runApp(const JobSearchApp());
 }
+//AIzaSyDSDwMUa_BYGseQIOQroUXnq5BTokd0DxI Google map api key
