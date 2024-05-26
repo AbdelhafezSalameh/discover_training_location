@@ -35,7 +35,7 @@ class BottomSheetContent extends StatelessWidget {
             ),
           ),
           SizedBox(height: scaleHeight(10, context)),
-         Text(title,
+        Text(title,
             style: TextStyle(
               fontSize: scaleWidth(18, context),
               fontWeight: FontWeight.bold,

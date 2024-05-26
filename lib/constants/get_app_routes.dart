@@ -76,6 +76,10 @@ class GetAppRoutes {
         name: NamedRoutes.companyMainScreen,
         page: () => const CompanyMainScreen(),
       ),
+            GetPage(
+        name: NamedRoutes.mapScreen,
+        page: () => const MainScreen(),
+      ),
     ];
   }
 }

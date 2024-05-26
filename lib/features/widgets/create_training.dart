@@ -23,6 +23,10 @@ class CreateTraining extends StatelessWidget {
       try {
         final user = FirebaseAuth.instance.currentUser;
         if (user != null) {
+          final double latitude = double.parse(controller.latitudeController.text);
+          final double longitude = double.parse(controller.longitudeController.text);
+          GeoPoint geoPoint = GeoPoint(latitude, longitude);
+
           await FirebaseFirestore.instance.collection('FeaturedTrainings').add({
             'description': controller.descriptionController.text,
             'responsibilities': controller.responsibilitiesController.text,
@@ -33,6 +37,7 @@ class CreateTraining extends StatelessWidget {
             'duration': controller.selectedDuration.value,
             'timeWork': controller.selectedTimeWork.value,
             'typeWork': controller.selectedTypeWork.value,
+            'location': geoPoint,
             'companyId': user.uid,
           });
           Get.snackbar('Success', 'Training created successfully');
@@ -45,12 +50,14 @@ class CreateTraining extends StatelessWidget {
   }
 
   void clearTextFields() {
-    controller.descriptionController.clear();
+     controller.descriptionController.clear();
     controller.responsibilitiesController.clear();
     controller.benefitsController.clear();
     controller.positionController.clear();
     controller.locationLinkController.clear();
     controller.salaryController.clear();
+    controller.latitudeController.clear();
+    controller.longitudeController.clear();
     controller.selectedDuration.value = controller.durationOptions.first;
     controller.selectedTimeWork.value = controller.timeWorkOptions.first;
     controller.selectedTypeWork.value = controller.typeWorkOptions.first;
@@ -135,6 +142,28 @@ class CreateTraining extends StatelessWidget {
                   controller: controller.salaryController,
                   isErrorfull: false,
                   inputType: InputType.salary,
+                  formKey: formKey,
+                ),                SizedBox(height: scaleWidth(10, context)),
+
+                CustomTextField(
+                  hintText: 'Latitude',
+                  textIcon: 'assets/icons/location.svg',
+                  isPassword: false,
+                  textType: TextInputType.number,
+                  controller: controller.latitudeController,
+                  isErrorfull: false,
+                  inputType: InputType.location,
+                  formKey: formKey,
+                ),                SizedBox(height: scaleWidth(10, context)),
+
+                 CustomTextField(
+                  hintText: 'Longitude',
+                  textIcon: 'assets/icons/location.svg',
+                  isPassword: false,
+                  textType: TextInputType.number,
+                  controller: controller.longitudeController,
+                  isErrorfull: false,
+                  inputType: InputType.location,
                   formKey: formKey,
                 ),
                 SizedBox(height: scaleWidth(10, context)),

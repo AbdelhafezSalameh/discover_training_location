@@ -8,7 +8,6 @@ class DataController extends GetxController {
 
   final Rx<List<DataModel>> savedJobs = Rx<List<DataModel>>([]);
 
-  // Fetch data
   Future<List<DataModel>> fetchData() async {
     // ignore: join_return_with_assignment
     _jobsData.value = await Repo.callResponse();

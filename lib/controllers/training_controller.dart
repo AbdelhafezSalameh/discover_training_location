@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:discover_training_location/modals/data/full_training_model.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class TrainingController extends GetxController {
   RxList<Training> trainings = <Training>[].obs;
@@ -31,7 +32,21 @@ class TrainingController extends GetxController {
     }
   }
 
+  List<Marker> getMarkers() {
+    return trainings.map((training) {
+      final GeoPoint location = training.location;
+      return Marker(
+        markerId: MarkerId(training.position),
+        position: LatLng(location.latitude, location.longitude),
+        infoWindow: InfoWindow(
+          title: training.position,
+          snippet: training.description,
+        ),
+      );
+    }).toList();
+  }
+
   Training? getTrainingById(String id) {
-    return trainings.firstWhereOrNull((training) => training.id == id);
+    return trainings.firstWhereOrNull((training) => training.position == id);
   }
 }

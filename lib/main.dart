@@ -33,4 +33,3 @@ void main() async {
   Get.put(TrainingController());
   runApp(const JobSearchApp());
 }
-//AIzaSyDSDwMUa_BYGseQIOQroUXnq5BTokd0DxI Google map api key

@@ -17,5 +17,6 @@ class NamedRoutes {
   static const String companyMainScreen = '/companyMainScreen';
   static const String companyHomeScreen = '/companyHomeScreen';
     static const String fullTraining = '/fullTraining';
+    static const String mapScreen = '/mapScreen';
 
 }

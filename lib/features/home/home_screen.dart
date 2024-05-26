@@ -154,7 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Padding(
       padding: EdgeInsets.fromLTRB(
         scaleWidth(24, context),
-        scaleHeight(42, context),
+        scaleHeight(20, context),
         scaleWidth(24, context),
         scaleHeight(16, context),
       ),
@@ -276,7 +276,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               SizedBox(
-                height: scaleHeight(220, context),
+                height: scaleHeight(190, context),
                 child: PageView.builder(
                   controller: _pageController,
                   itemCount: 4,
@@ -297,7 +297,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Padding(
                 padding: EdgeInsets.fromLTRB(
                   scaleWidth(24, context),
-                  scaleHeight(42, context),
+                  scaleHeight(35, context),
                   scaleWidth(24, context),
                   scaleHeight(16, context),
                 ),
@@ -308,42 +308,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       mainText: StaticText.popularJobs,
                       text: StaticText.seeAll,
                     ),
-                    VerticalSpace(
-                      value: 20,
-                      ctx: context,
-                    ),
                     buildActiveTabContent(context),
-                    // GridView.builder(
-                    //   shrinkWrap: true,
-                    //   physics: const NeverScrollableScrollPhysics(),
-                    //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    //     crossAxisCount: 2,
-                    //     crossAxisSpacing: 8.0,
-                    //     mainAxisSpacing: 20.0,
-                    //     childAspectRatio: 1,
-                    //   ),
-                    //   itemCount: 4,
-                    //   itemBuilder: (context, index) {
-                    //     return PopularJobsCard(
-                    //       logo: index % 2 == 0
-                    //           ? Assets.googleSvg
-                    //           : Assets.facebookSvg,
-                    //       company: index % 2 == 0
-                    //           ? StaticText.google
-                    //           : StaticText.facebook,
-                    //       role: index % 2 == 0 ? 'Sr. Engineer' : 'UI Designer',
-                    //       salary:
-                    //           index % 2 == 0 ? '\JD180,000/y' : '\JD110,000/y',
-                    //       color1: index % 2 == 0
-                    //           ? ColorStyles.cEBF1FF
-                    //           : ColorStyles.cFFEBF3,
-                    //       color2: index % 2 == 0
-                    //           ? ColorStyles.cFFEBF3
-                    //           : ColorStyles.cEBF1FF,
-                    //       duration: const Duration(seconds: 2),
-                    //     );
-                    //   },
-                    // ),
                   ],
                 ),
               ),

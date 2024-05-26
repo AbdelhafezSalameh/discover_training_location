@@ -3,6 +3,9 @@
         android:label="discover_training_location"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDSDwMUa_BYGseQIOQroUXnq5BTokd0DxI"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

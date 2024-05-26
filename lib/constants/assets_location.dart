@@ -43,6 +43,7 @@ class Assets {
   static const String create = '$pathSvg/create.svg';
   static const String profile2 = '$pathSvg/profile2.svg';
   static const String profile = '$pathSvg/profile.svg';
+  static const String map = '$pathSvg/map.svg';
 
   // IMAGES
   static const String logoImage = '$pathImg/DTL.png';

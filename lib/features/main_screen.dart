@@ -1,4 +1,5 @@
 import 'package:discover_training_location/constants/assets_location.dart';
+import 'package:discover_training_location/constants/dimensions.dart';
 import 'package:discover_training_location/themes/color_styles.dart';
 import 'package:discover_training_location/controllers/controller.dart';
 import 'package:flutter/material.dart';
@@ -52,11 +53,15 @@ class _MainScreenState extends State<MainScreen> {
                 icon: controller.currentIndex == 1
                     ? Column(
                         children: [
-                          SvgPicture.asset(
-                            Assets.navbarMsg,
-                            colorFilter: const ColorFilter.mode(
-                              ColorStyles.defaultMainColor,
-                              BlendMode.srcIn,
+                          SizedBox(
+                            height: scaleHeight(30, context),
+                            width: scaleWidth(35, context),
+                            child: SvgPicture.asset(
+                              Assets.map,
+                              colorFilter: const ColorFilter.mode(
+                                ColorStyles.defaultMainColor,
+                                BlendMode.srcIn,
+                              ),
                             ),
                           ),
                           SvgPicture.asset(
@@ -68,8 +73,12 @@ class _MainScreenState extends State<MainScreen> {
                           ),
                         ],
                       )
-                    : SvgPicture.asset(
-                        Assets.navbarMsg,
+                    : SizedBox(
+                        height: scaleHeight(30, context),
+                        width: scaleWidth(30, context),
+                        child: SvgPicture.asset(
+                          Assets.map,
+                        ),
                       ),
                 label: '',
               ),

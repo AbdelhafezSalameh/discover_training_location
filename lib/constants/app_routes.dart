@@ -8,6 +8,7 @@ import 'package:discover_training_location/features/full_page_job.dart';
 import 'package:discover_training_location/features/home/company_home_screen.dart';
 import 'package:discover_training_location/features/home/home_screen.dart';
 import 'package:discover_training_location/constants/named_routes.dart';
+import 'package:discover_training_location/features/map_screen.dart';
 import 'package:discover_training_location/features/widgets/user_profile.dart';
 import 'package:discover_training_location/utils/splash_screen.dart';
 import 'package:discover_training_location/utils/success_screen.dart';
@@ -31,6 +32,8 @@ class AppRoutes {
       // NamedRoutes.testScreen: (context) => TestScreen(),
       NamedRoutes.companyMainScreen: (context) => const CompanyMainScreen(),
       NamedRoutes.companyHomeScreen: (context) => const CompanyHomeScreen(),
+            NamedRoutes.mapScreen: (context) => const MapScreen(),
+
     };
   }
 }

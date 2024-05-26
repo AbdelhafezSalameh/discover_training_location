@@ -1,7 +1,7 @@
+import 'package:discover_training_location/features/map_screen.dart';
 import 'package:discover_training_location/features/saved_jobs_screen.dart';
 import 'package:discover_training_location/features/widgets/job_details_card.dart';
 import 'package:discover_training_location/features/home/home_screen.dart';
-import 'package:discover_training_location/features/messages/messages_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,7 +9,7 @@ class Controller extends GetxController {
   final RxInt _currentIndex = 0.obs;
   final List<Widget> _tabs = [
     const HomeScreen(),
-    const MessagesScreen(),
+    const MapScreen(),
     SavedJobsScreen(),
     const JobDetailsCard(),
   ];

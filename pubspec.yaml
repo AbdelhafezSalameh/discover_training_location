@@ -58,6 +58,7 @@ dependencies:
   draggable_home: ^1.0.5
   image_picker: ^1.0.4
   chat_gpt_flutter: ^1.0.16
+  google_maps_flutter: ^2.6.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

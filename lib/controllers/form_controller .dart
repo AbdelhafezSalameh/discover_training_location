@@ -10,6 +10,8 @@ class FormController extends GetxController {
   TextEditingController positionController = TextEditingController();
   TextEditingController locationLinkController = TextEditingController();
   TextEditingController salaryController = TextEditingController();
+    TextEditingController latitudeController = TextEditingController();
+  TextEditingController longitudeController = TextEditingController();
 
   var selectedDuration = '1 Month'.obs;
   var selectedTimeWork = 'Full Time'.obs;
@@ -38,6 +40,8 @@ class FormController extends GetxController {
     positionController.addListener(_validateForm);
     locationLinkController.addListener(_validateForm);
     salaryController.addListener(_validateForm);
+    latitudeController.addListener(_validateForm);
+    longitudeController.addListener(_validateForm);
     selectedDuration.listen((_) => _validateForm());
     selectedTimeWork.listen((_) => _validateForm());
     selectedTypeWork.listen((_) => _validateForm());
@@ -50,6 +54,8 @@ class FormController extends GetxController {
         positionController.text.isNotEmpty &&
         locationLinkController.text.isNotEmpty &&
         salaryController.text.isNotEmpty &&
+        latitudeController.text.isNotEmpty &&
+        longitudeController.text.isNotEmpty &&
         selectedDuration.value.isNotEmpty &&
         selectedTimeWork.value.isNotEmpty &&
         selectedTypeWork.value.isNotEmpty) {
