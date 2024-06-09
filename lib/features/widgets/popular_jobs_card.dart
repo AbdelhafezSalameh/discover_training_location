@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:discover_training_location/themes/color_styles.dart';
 import 'package:discover_training_location/constants/dimensions.dart';
@@ -33,6 +32,7 @@ class _PopularJobsCardState extends State<PopularJobsCard> {
   late Color _currentColor;
   late Timer _timer;
   bool _colorChange = false;
+  bool _isLongPressed = false;
 
   @override
   void initState() {
@@ -40,8 +40,10 @@ class _PopularJobsCardState extends State<PopularJobsCard> {
     _currentColor = widget.color1;
     _timer = Timer.periodic(widget.duration, (Timer timer) {
       setState(() {
-        _colorChange = !_colorChange;
-        _currentColor = _colorChange ? widget.color2 : widget.color1;
+        if (!_isLongPressed) {
+          _colorChange = !_colorChange;
+          _currentColor = _colorChange ? widget.color2 : widget.color1;
+        }
       });
     });
   }
@@ -52,45 +54,55 @@ class _PopularJobsCardState extends State<PopularJobsCard> {
     super.dispose();
   }
 
+  void _onLongPress() {
+    setState(() {
+      _isLongPressed = !_isLongPressed;
+      _currentColor = _isLongPressed ? ColorStyles.cEBF1FF : widget.color1;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: widget.duration,
-      width: scaleWidth(136, context),
-      height: scaleHeight(164, context),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(scaleRadius(24, context)),
-        color: _currentColor,
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          SvgPicture.asset(widget.logo),
-          Text(
-            widget.role,
-            style: TextStyle(
-              fontSize: scaleWidth(14, context),
-              color: ColorStyles.c0d0d26,
-              fontWeight: FontWeight.w600,
+    return GestureDetector(
+      onLongPress: _onLongPress,
+      child: AnimatedContainer(
+        duration: widget.duration,
+        width: scaleWidth(136, context),
+        height: scaleHeight(164, context),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(scaleRadius(15, context)),
+          color: _currentColor,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            SvgPicture.asset(widget.logo),
+            Text(
+              widget.role,
+              style: TextStyle(
+                fontSize: scaleWidth(14, context),
+                color: ColorStyles.c0d0d26,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
-          Text(
-            widget.company,
-            style: TextStyle(
-              fontSize: scaleWidth(12, context),
-              color: ColorStyles.c7A7C85,
-              fontWeight: FontWeight.w400,
+            Text(
+              widget.company,
+              style: TextStyle(
+                fontSize: scaleWidth(12, context),
+                color: ColorStyles.c7A7C85,
+                fontWeight: FontWeight.w400,
+              ),
             ),
-          ),
-          Text(
-            widget.salary,
-            style: TextStyle(
-              fontSize: scaleWidth(12, context),
-              color: ColorStyles.c0d0d26,
-              fontWeight: FontWeight.w500,
+            Text(
+              widget.salary,
+              style: TextStyle(
+                fontSize: scaleWidth(12, context),
+                color: ColorStyles.c0d0d26,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -187,9 +187,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisSpacing: 20.0,
                     childAspectRatio: 1,
                   ),
-                  itemCount: trainingController.trainings.length,
+                  itemCount: trainingController.activeTrainings.length,
                   itemBuilder: (context, index) {
-                    final training = trainingController.trainings[index];
+                    final training = trainingController.activeTrainings[index];
 
                     return GestureDetector(
                       onTap: () {

@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Training {
-  //final String id;
   final String description;
   final String responsibilities;
   final String benefits;
@@ -13,9 +12,9 @@ class Training {
   final String typeWork;
   final String companyId;
   final GeoPoint location;
+  String isAvailable;
 
   Training({
-   // required this.id,
     required this.description,
     required this.responsibilities,
     required this.benefits,
@@ -27,11 +26,11 @@ class Training {
     required this.typeWork,
     required this.companyId,
     required this.location,
+    this.isAvailable = 'pending',
   });
 
   factory Training.fromMap(Map<String, dynamic> map) {
     return Training(
-     // id: map['id'] ?? '',
       description: map['description'] ?? '',
       responsibilities: map['responsibilities'] ?? '',
       benefits: map['benefits'] ?? '',
@@ -43,6 +42,7 @@ class Training {
       timeWork: map['timeWork'] ?? '',
       typeWork: map['typeWork'] ?? '',
       companyId: map['companyId'] ?? '',
+      isAvailable: map['isAvailable'] ?? 'pending',
     );
   }
 }

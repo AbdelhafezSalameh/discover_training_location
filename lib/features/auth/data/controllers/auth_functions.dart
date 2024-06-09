@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:discover_training_location/admin_panel/main.dart';
 import 'package:discover_training_location/constants/route_functions.dart';
 import 'package:discover_training_location/features/auth/data/services/firebase/firestoreService.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -40,28 +41,28 @@ class AuthFunctions {
       User? user = FirebaseAuth.instance.currentUser;
 
       if (user != null) {
-        // Get the user's role from Firestore
         String? userRole = await getUserRole(user.uid);
 
         if (userRole != null) {
-          // Navigate based on user role
           if (userRole == 'student') {
-            // Navigate to student screen
             Navigator.pushNamedAndRemoveUntil(
               context,
               NamedRoutes.mainScreen,
               (route) => false,
             );
           } else if (userRole == 'company') {
-            // Navigate to company screen
             Navigator.pushNamedAndRemoveUntil(
               context,
               NamedRoutes.companyMainScreen,
               (route) => false,
             );
+          } else if (userRole == 'admin') {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => MyApp()),
+            );
           }
         } else {
-          // Handle case where user role is not defined
           //  failureBar(ErrorText.undefinedUserRole, context);
         }
       }
@@ -75,26 +76,21 @@ class AuthFunctions {
     }
   }
 
-  // Function to fetch user role from Firestore
   static Future<String?> getUserRole(String userId) async {
     try {
       DocumentSnapshot userSnapshot =
           await FirestoreService().getUserDocument(userId);
 
       if (userSnapshot.exists) {
-        // Get the user's role field from Firestore
         return userSnapshot.get('role');
       } else {
-        // Handle case where user document does not exist
         return null;
       }
     } catch (e) {
-      // Handle any errors
       return null;
     }
   }
 
-  // REGISTER USER
   static Future<void> registerUser({
     required TextEditingController emailController,
     required TextEditingController passwordController,

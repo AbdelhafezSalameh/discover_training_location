@@ -1,3 +1,5 @@
+import 'package:discover_training_location/admin_panel/main.dart';
+import 'package:discover_training_location/admin_panel/screens/main/main_screen.dart';
 import 'package:discover_training_location/features/auth/presentation/screens/forgot_password.dart';
 import 'package:discover_training_location/features/auth/presentation/screens/login_screen.dart';
 import 'package:discover_training_location/features/auth/presentation/screens/register_screen.dart';
@@ -33,6 +35,8 @@ class AppRoutes {
       NamedRoutes.companyMainScreen: (context) => const CompanyMainScreen(),
       NamedRoutes.companyHomeScreen: (context) => const CompanyHomeScreen(),
             NamedRoutes.mapScreen: (context) => const MapScreen(),
+            NamedRoutes.adminMainScreen: (context) =>  MainScreen(),
+            NamedRoutes.admin: (context) =>  MyApp(),
 
     };
   }

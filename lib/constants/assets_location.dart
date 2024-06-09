@@ -52,4 +52,6 @@ class Assets {
   static const String validateCreateTrainig =
       '$pathImg/validate create training.png';
   static const String create2 = '$pathImg/create.png';
+    static const String binary = '$pathImg/binary_code.png';
+
 }

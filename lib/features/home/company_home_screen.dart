@@ -45,7 +45,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
     });
 
     fetchUserDataFromFirestore();
-    trainingController.fetchTrainings();
+    trainingController.fetchTrainings(companyId: companyId);
   }
 
   @override
@@ -148,72 +148,103 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
   }
 
   Widget buildActiveTabContent(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        scaleWidth(24, context),
-        scaleHeight(42, context),
-        scaleWidth(24, context),
-        scaleHeight(16, context),
-      ),
-      child: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('FeaturedTrainings')
-            .snapshots(),
-        builder: (context, snapshot) {
-          trainingController.fetchTrainings(companyId: companyId);
-
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            trainingController.fetchTrainings(companyId: companyId);
-
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('No trainings available'));
-          }
-
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 8.0,
-                    mainAxisSpacing: 20.0,
-                    childAspectRatio: 1,
-                  ),
-                  itemCount: trainingController.trainings.length,
-                  itemBuilder: (context, index) {
-                    final training = trainingController.trainings[index];
-
-                    return GestureDetector(
-                      onTap: () {
-                        _showJobDetailsBottomSheet(context, training);
-                      },
-                      child: PopularJobsCard(
-                        logo: Assets.googleSvg,
-                        company: companyName,
-                        role: training.position,
-                        salary: training.salary,
-                        color1: index % 2 == 0
-                            ? ColorStyles.cEBF1FF
-                            : ColorStyles.cFFEBF3,
-                        color2: index % 2 == 0
-                            ? ColorStyles.cFFEBF3
-                            : ColorStyles.cEBF1FF,
-                        duration: const Duration(seconds: 2),
-                      ),
-                    );
-                  },
-                ),
-              ],
+    return Obx(() {
+      if (trainingController.activeTrainings.isEmpty) {
+        return const Center(child: Text('No active trainings available'));
+      }
+      return SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+            scaleWidth(24, context),
+            scaleHeight(42, context),
+            scaleWidth(24, context),
+            scaleHeight(16, context),
+          ),
+          child: GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 8.0,
+              mainAxisSpacing: 20.0,
+              childAspectRatio: 1,
             ),
-          );
-        },
-      ),
-    );
+            itemCount: trainingController.activeTrainings.length,
+            itemBuilder: (context, index) {
+              final training = trainingController.activeTrainings[index];
+              return GestureDetector(
+                onTap: () {
+                  _showJobDetailsBottomSheet(context, training);
+                },
+                child: PopularJobsCard(
+                  logo: Assets.googleSvg,
+                  company: companyName,
+                  role: training.position,
+                  salary: training.salary,
+                  color1: index % 2 == 0
+                      ? ColorStyles.cEBF1FF
+                      : ColorStyles.cFFEBF3,
+                  color2: index % 2 == 0
+                      ? ColorStyles.cFFEBF3
+                      : ColorStyles.cEBF1FF,
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+            },
+          ),
+        ),
+      );
+    });
+  }
+
+  Widget buildPendingTabContent(BuildContext context) {
+    return Obx(() {
+      if (trainingController.pendingTrainings.isEmpty) {
+        return const Center(child: Text('No pending trainings available'));
+      }
+      return SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+            scaleWidth(24, context),
+            scaleHeight(42, context),
+            scaleWidth(24, context),
+            scaleHeight(16, context),
+          ),
+          child: GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 8.0,
+              mainAxisSpacing: 20.0,
+              childAspectRatio: 1,
+            ),
+            itemCount: trainingController.pendingTrainings.length,
+            itemBuilder: (context, index) {
+              final training = trainingController.pendingTrainings[index];
+              return GestureDetector(
+                onTap: () {
+                  _showJobDetailsBottomSheet(context, training);
+                },
+                child: PopularJobsCard(
+                  logo: Assets.googleSvg,
+                  company: companyName,
+                  role: training.position,
+                  salary: training.salary,
+                  color1: index % 2 == 0
+                      ? ColorStyles.cEBF1FF
+                      : ColorStyles.cFFEBF3,
+                  color2: index % 2 == 0
+                      ? ColorStyles.cFFEBF3
+                      : ColorStyles.cEBF1FF,
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+            },
+          ),
+        ),
+      );
+    });
   }
 
   @override
@@ -243,7 +274,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                 child: TabBarView(
                   children: [
                     buildActiveTabContent(context),
-                    const Center(child: Text('Pending Content')),
+                    buildPendingTabContent(context),
                     const Center(child: Text('Deleted Content')),
                   ],
                 ),

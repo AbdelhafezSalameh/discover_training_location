@@ -9,7 +9,6 @@ class BottomSheetContent extends StatelessWidget {
   final String title;
   final String description;
 
-
   const BottomSheetContent({
     Key? key,
     required this.onTapButton,
@@ -28,14 +27,16 @@ class BottomSheetContent extends StatelessWidget {
         children: [
           Padding(
             padding: EdgeInsets.only(
-                left: scaleWidth(130, context), right: scaleWidth(130, context)),
+                left: scaleWidth(130, context),
+                right: scaleWidth(130, context)),
             child: const Divider(
               thickness: 4,
               color: Colors.grey,
             ),
           ),
           SizedBox(height: scaleHeight(10, context)),
-        Text(title,
+          Text(
+            title,
             style: TextStyle(
               fontSize: scaleWidth(18, context),
               fontWeight: FontWeight.bold,

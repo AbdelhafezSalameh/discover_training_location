@@ -23,8 +23,10 @@ class CreateTraining extends StatelessWidget {
       try {
         final user = FirebaseAuth.instance.currentUser;
         if (user != null) {
-          final double latitude = double.parse(controller.latitudeController.text);
-          final double longitude = double.parse(controller.longitudeController.text);
+          final double latitude =
+              double.parse(controller.latitudeController.text);
+          final double longitude =
+              double.parse(controller.longitudeController.text);
           GeoPoint geoPoint = GeoPoint(latitude, longitude);
 
           await FirebaseFirestore.instance.collection('FeaturedTrainings').add({
@@ -39,6 +41,7 @@ class CreateTraining extends StatelessWidget {
             'typeWork': controller.selectedTypeWork.value,
             'location': geoPoint,
             'companyId': user.uid,
+            'isAvailable': "pending",
           });
           Get.snackbar('Success', 'Training created successfully');
           clearTextFields();
@@ -50,7 +53,7 @@ class CreateTraining extends StatelessWidget {
   }
 
   void clearTextFields() {
-     controller.descriptionController.clear();
+    controller.descriptionController.clear();
     controller.responsibilitiesController.clear();
     controller.benefitsController.clear();
     controller.positionController.clear();
@@ -143,8 +146,8 @@ class CreateTraining extends StatelessWidget {
                   isErrorfull: false,
                   inputType: InputType.salary,
                   formKey: formKey,
-                ),                SizedBox(height: scaleWidth(10, context)),
-
+                ),
+                SizedBox(height: scaleWidth(10, context)),
                 CustomTextField(
                   hintText: 'Latitude',
                   textIcon: 'assets/icons/location.svg',
@@ -154,9 +157,9 @@ class CreateTraining extends StatelessWidget {
                   isErrorfull: false,
                   inputType: InputType.location,
                   formKey: formKey,
-                ),                SizedBox(height: scaleWidth(10, context)),
-
-                 CustomTextField(
+                ),
+                SizedBox(height: scaleWidth(10, context)),
+                CustomTextField(
                   hintText: 'Longitude',
                   textIcon: 'assets/icons/location.svg',
                   isPassword: false,

@@ -23,7 +23,6 @@ class LogIn extends StatefulWidget {
 }
 
 class _LogInState extends State<LogIn> {
-
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passWordController = TextEditingController();
@@ -33,38 +32,37 @@ class _LogInState extends State<LogIn> {
   String? email;
   String? password;
   bool rememberPassword = true;
-Future<String?> login({
-  required String email,
-  required String password,
-}) async {
-  try {
-    AuthService authService = AuthService();
+  Future<String?> login({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      AuthService authService = AuthService();
 
-    bool isEmailRegistered = await authService.isEmailRegistered(email);
-    if (!isEmailRegistered) {
-      return 'Email is not registered.';
-    }
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    
-    return 'success';
-  } on FirebaseAuthException catch (e) {
-    if (e.code == 'invalid-email') {
-      return e.code;
-    } else if (e.code == 'user-not-found') {
-      return e.code;
-    } else if (e.code == 'wrong-password') {
-      return e.code;
-    } else {
+      bool isEmailRegistered = await authService.isEmailRegistered(email);
+      if (!isEmailRegistered) {
+        return 'Email is not registered.';
+      }
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      return 'success';
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'invalid-email') {
+        return e.code;
+      } else if (e.code == 'user-not-found') {
+        return e.code;
+      } else if (e.code == 'wrong-password') {
+        return e.code;
+      } else {
+        return e.toString();
+      }
+    } catch (e) {
       return e.toString();
     }
-  } catch (e) {
-    return e.toString();
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -259,4 +257,3 @@ Future<String?> login({
     );
   }
 }
-

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:discover_training_location/constants/assets_location.dart';
 import 'package:discover_training_location/controllers/training_controller.dart';
 import 'package:discover_training_location/features/full_training.dart';
@@ -21,12 +20,23 @@ class _MapScreenState extends State<MapScreen> {
       Completer<GoogleMapController>();
   MapType _currentMapType = MapType.normal;
   final TrainingController trainingController = Get.find();
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  BitmapDescriptor? customMarkerIcon;
 
   @override
   void initState() {
     super.initState();
+    _loadCustomMarker();
     trainingController.fetchTrainings();
+  }
+
+  Future<void> _loadCustomMarker() async {
+    final customIcon = await BitmapDescriptor.fromAssetImage(
+      ImageConfiguration(size: Size(48, 48)),
+      Assets.binary,
+    );
+    setState(() {
+      customMarkerIcon = customIcon;
+    });
   }
 
   void _changeMapType(MapType newMapType) {
@@ -64,10 +74,9 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
       body: Obx(() {
-        if (trainingController.trainings.isEmpty) {
-          return Center(child: CircularProgressIndicator());
+        if (trainingController.activeTrainings.isEmpty) {
+          return const Center(child: CircularProgressIndicator());
         }
         return GoogleMap(
           mapType: _currentMapType,
@@ -78,18 +87,57 @@ class _MapScreenState extends State<MapScreen> {
           onMapCreated: (GoogleMapController controller) {
             _controller.complete(controller);
           },
-          markers: trainingController.trainings
+          markers: trainingController.activeTrainings
               .map((training) => Marker(
                     markerId: MarkerId(training.position),
                     position: LatLng(
                       training.location.latitude,
                       training.location.longitude,
                     ),
+                    icon: customMarkerIcon ?? BitmapDescriptor.defaultMarker,
                     onTap: () => _onMarkerTapped(training),
                   ))
               .toSet(),
         );
       }),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showModalBottomSheet<void>(
+            context: context,
+            builder: (BuildContext context) {
+              return SizedBox(
+                height: 200,
+                child: Column(
+                  children: [
+                    ListTile(
+                      title: const Text('Normal'),
+                      onTap: () {
+                        _changeMapType(MapType.normal);
+                        Navigator.pop(context);
+                      },
+                    ),
+                    ListTile(
+                      title: const Text('Satellite'),
+                      onTap: () {
+                        _changeMapType(MapType.satellite);
+                        Navigator.pop(context);
+                      },
+                    ),
+                    ListTile(
+                      title: const Text('Hybrid'),
+                      onTap: () {
+                        _changeMapType(MapType.hybrid);
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+        child: const Icon(Icons.layers),
+      ),
     );
   }
 }
