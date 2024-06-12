@@ -276,7 +276,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               SizedBox(
-                height: scaleHeight(190, context),
+                height: scaleHeight(200, context),
                 child: PageView.builder(
                   controller: _pageController,
                   itemCount: 4,
