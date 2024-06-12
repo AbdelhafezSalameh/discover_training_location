@@ -33,7 +33,6 @@ class _RequrstsTrainingsState extends State<RequrstsTrainings> {
   @override
   void initState() {
     super.initState();
-
     trainingController.fetchTrainings();
     fetchUserData().then((_) {
       setState(() {});
@@ -121,12 +120,17 @@ class _RequrstsTrainingsState extends State<RequrstsTrainings> {
                       onTap: () {
                         _showJobDetailsBottomSheet(context, training);
                       },
+                      onLongPress: () {
+                        _updateTrainingStatus(training, 'active');
+                      },
                       child: PopularJobsCard(
                         logo: Assets.googleSvg,
                         company: companyName,
                         role: training.position,
                         salary: training.salary,
-                        duration: const Duration(seconds: 2), color1: ColorStyles.cFFEBF3, color2: ColorStyles.cFFEBF3,
+                        duration: const Duration(seconds: 2),
+                        color1: ColorStyles.cFFEBF3,
+                        color2: ColorStyles.cFFEBF3,
                       ),
                     );
                   },
@@ -137,6 +141,19 @@ class _RequrstsTrainingsState extends State<RequrstsTrainings> {
         },
       ),
     );
+  }
+
+  Future<void> _updateTrainingStatus(
+      Training training, String newStatus) async {
+    setState(() {
+      isLoading = true;
+    });
+
+    await trainingController.updateTrainingStatus(training, newStatus);
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override

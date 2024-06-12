@@ -23,9 +23,9 @@ class TrainingController extends GetxController {
       final snapshot = await query.get();
 
       if (snapshot.docs.isNotEmpty) {
-        var allTrainings = snapshot.docs
-            .map((doc) => Training.fromMap(doc.data() as Map<String, dynamic>))
-            .toList();
+        var allTrainings = snapshot.docs.map((doc) {
+          return Training.fromMap(doc.id, doc.data() as Map<String, dynamic>);
+        }).toList();
 
         activeTrainings.value = allTrainings
             .where((training) => training.isAvailable == 'active')
@@ -39,10 +39,29 @@ class TrainingController extends GetxController {
     }
   }
 
+  Future<void> updateTrainingStatus(Training training, String newStatus) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('FeaturedTrainings')
+          .doc(training.id)
+          .update({'isAvailable': newStatus});
+
+      if (newStatus == 'active') {
+        pendingTrainings.remove(training);
+        activeTrainings.add(training);
+      } else if (newStatus == 'pending') {
+        activeTrainings.remove(training);
+        pendingTrainings.add(training);
+      }
+
+      training.isAvailable = newStatus;
+    } catch (e) {
+      print('Error updating training status: $e');
+    }
+  }
+
   Training? getTrainingById(String id) {
-    return activeTrainings
-            .firstWhereOrNull((training) => training.position == id) ??
-        pendingTrainings
-            .firstWhereOrNull((training) => training.position == id);
+    return activeTrainings.firstWhereOrNull((training) => training.id == id) ??
+        pendingTrainings.firstWhereOrNull((training) => training.id == id);
   }
 }

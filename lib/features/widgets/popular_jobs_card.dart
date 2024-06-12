@@ -54,17 +54,17 @@ class _PopularJobsCardState extends State<PopularJobsCard> {
     super.dispose();
   }
 
-  void _onLongPress() {
-    setState(() {
-      _isLongPressed = !_isLongPressed;
-      _currentColor = _isLongPressed ? ColorStyles.cEBF1FF : widget.color1;
-    });
-  }
+  // void _onLongPress() {
+  //   setState(() {
+  //     _isLongPressed = !_isLongPressed;
+  //     _currentColor = _isLongPressed ? ColorStyles.cEBF1FF : widget.color1;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onLongPress: _onLongPress,
+      //  onLongPress: _onLongPress,
       child: AnimatedContainer(
         duration: widget.duration,
         width: scaleWidth(136, context),

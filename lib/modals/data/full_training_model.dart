@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Training {
+  final String id;
   final String description;
   final String responsibilities;
   final String benefits;
@@ -15,6 +16,7 @@ class Training {
   String isAvailable;
 
   Training({
+    required this.id,
     required this.description,
     required this.responsibilities,
     required this.benefits,
@@ -29,8 +31,9 @@ class Training {
     this.isAvailable = 'pending',
   });
 
-  factory Training.fromMap(Map<String, dynamic> map) {
+  factory Training.fromMap(String id, Map<String, dynamic> map) {
     return Training(
+      id: id,
       description: map['description'] ?? '',
       responsibilities: map['responsibilities'] ?? '',
       benefits: map['benefits'] ?? '',
